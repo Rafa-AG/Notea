@@ -47,12 +47,12 @@ export class EditNotaPage implements OnInit {
     this.notasS.actualizarNota(this.nota.id, data)
       .then((respuesta) => {
         this.loadingController.dismiss();
-        this.presentToast('Nota guardada', 'success');
+        this.presentToast('Nota guardada');
         this.modalController.dismiss();
       })
       .catch((err) => {
         this.loadingController.dismiss();
-        this.presentToast('Error al guardar la nota', 'danger');
+        this.presentToast('Error al guardar la nota');
       })
   }
 
@@ -65,12 +65,12 @@ export class EditNotaPage implements OnInit {
     await loading.present();
   }
 
-  async presentToast(msg: string, col: string) {
+  async presentToast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,
-      color: col,
+      cssClass: 'toast',
       duration: 2000,
-      position: "top"
+      position: 'bottom'
     });
     toast.present();
   }

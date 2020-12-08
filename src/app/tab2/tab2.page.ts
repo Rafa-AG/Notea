@@ -43,7 +43,7 @@ export class Tab2Page {
 
   async presentLoading() {
     const loading = await this.loadingController.create({
-      cssClass: 'my-custom-class',
+      cssClass: 'loading',
       message: '', 
       spinner: 'crescent'
     });
