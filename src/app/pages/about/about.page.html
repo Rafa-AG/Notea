@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar style="--background: #ff7300;">
+    <ion-button slot="start" fill="clear" color="light" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" style="zoom: 1.25;"></ion-icon>
+    </ion-button>
+    <ion-title color="light">Acerca de...</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <img src="https://i.imgur.com/ZlHs87k.png">
+</ion-content>
+
+<ion-footer>
+  <ion-list lines="full">
+    <ion-item>
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label color="dark" style="padding-left: 2%"><p>Rafael Alba González</p></ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-icon name="help-circle-outline"></ion-icon>
+      <ion-label color="dark" style="padding-left: 2%"><p>Versión 0.0.1</p></ion-label>
+    </ion-item>
+    <ion-item (click)="openWithCordovaBrowser(this.instagram)">
+      <ion-icon name="logo-instagram"></ion-icon>
+      <ion-label style="padding-left: 2%" color="dark"><p>Instagram</p></ion-label>
+    </ion-item>
+    <ion-item (click)="openWithCordovaBrowser(this.twitter)">
+      <ion-icon name="logo-twitter"></ion-icon>
+      <ion-label style="padding-left: 2%" color="dark"><p>Twitter</p></ion-label>
+    </ion-item>
+  </ion-list>
+</ion-footer>

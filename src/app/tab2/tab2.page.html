@@ -1,17 +1,23 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
+  <ion-toolbar style="--background: #ff7300;">
+    <ion-title color="light">
+      Añadir Tarea
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <form [formGroup]="tasks" (ngSubmit)="this.sendForm()">
+    <ion-item>
+      <ion-input type="text" formControlName="title" placeholder="Título"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-textarea formControlName="description" placeholder="Descripción" autocapitalize="true" auto-grow="true">
+      </ion-textarea>
+    </ion-item>
+    <div style="text-align: right;">
+      <ion-button shape="round" style="--color:#ffa44f; --border-color:#ffa44f;" fill="outline" type="submit" [disabled]="!tasks.valid">Añadir
+      </ion-button>
+    </div>
+  </form>
 </ion-content>

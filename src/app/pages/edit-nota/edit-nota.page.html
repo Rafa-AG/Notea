@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar style="--background: #ff7300;">
+    <ion-button slot="start" fill="clear" color="light" (click)="presentAlertConfirm()">
+      <ion-icon name="arrow-back-outline" style="zoom: 1.25;"></ion-icon>
+    </ion-button>
+    <ion-title color="light">Editar Nota</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="tasks" (ngSubmit)="this.sendForm()">
+    <ion-item>
+      <ion-input type="text" formControlName="title" placeholder="Título"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-textarea formControlName="description" placeholder="Descripción" autocapitalize="true" auto-grow="true">
+      </ion-textarea>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label>Favorito</ion-label>
+      <ion-toggle formControlName="favorite" [checked]="favorite" style="--background-checked: #ffa44f; --handle-background-checked: white"></ion-toggle>
+    </ion-item>
+    <div style="text-align: right;">
+      <ion-button shape="round" style="--color:#ffa44f; --border-color:#ffa44f;" fill="outline" type="submit"
+        [disabled]="!tasks.valid">Editar
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

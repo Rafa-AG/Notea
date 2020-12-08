@@ -1,17 +1,24 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
+  <ion-toolbar style="--background:#ff7300;">
+    <ion-title color="light">
+      Perfil
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <div class="avatar">
+    <ion-avatar style="zoom: 250%;">
+      <img
+        src="{{perfil.avatar}}">
+    </ion-avatar>
+  </div>
+  <div class="nombre">
+    <ion-label color="dark">{{perfil.name}}</ion-label>
+  </div>
+  <div class="cerrarSesion" (click)="logout()">
+    <ion-buttons>
+      <ion-button expand="block" fill="outline" color="danger">Cerrar Sesión</ion-button>
+    </ion-buttons>
+  </div>
 </ion-content>

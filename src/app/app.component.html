@@ -1,3 +1,28 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu side="start" menuId="first" contentId="main">
+    <ion-header [translucent]="true">
+      <ion-toolbar style="--background: #ff7300;">
+        <ion-title color="light">Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list lines="full">
+        <ion-item (click)="favoritos()">
+          <ion-icon name="star-outline"></ion-icon>
+          <ion-label style="padding-left: 2%">
+            <p>Favoritos</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+    <ion-footer>
+      <ion-item (click)="about()" lines="full">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <ion-label style="padding-left: 2%">
+          <p>Acerca de Notea</p>
+        </ion-label>
+      </ion-item>
+    </ion-footer>
+  </ion-menu>
+  <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>
