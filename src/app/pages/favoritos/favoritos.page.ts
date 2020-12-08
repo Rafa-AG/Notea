@@ -9,15 +9,23 @@ import { NotasService } from 'src/app/services/notas.service';
 })
 export class FavoritosPage implements OnInit {
 
+  //Nota Array
   public listaFavoritos=[];
 
   constructor(private notasS:NotasService,
     private modalController:ModalController) { }
 
+  /**
+   * Method to call cargaDatos() at init of page
+   */
   ngOnInit() {
     this.cargaDatos();
   }
 
+  /**
+   * Method to get all note data from firebase and save it on listaFavoritos
+   * @param $event 
+   */
   public cargaDatos($event=null){
     try {
       this.notasS.leeNotas()
@@ -44,6 +52,9 @@ export class FavoritosPage implements OnInit {
     }
   }
 
+  /**
+   * Method to close Modal and come back to Tab1
+   */
   public goBack(){
     this.modalController.dismiss();
   }

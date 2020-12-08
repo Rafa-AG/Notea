@@ -1,5 +1,6 @@
-import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
-
+/**
+ * Model interface Nota
+ */
 export interface Nota{
     id?:any,
     titulo: string,

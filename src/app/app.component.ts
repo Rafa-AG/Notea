@@ -30,6 +30,9 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Method to open About Page
+   */
   public async about() {
     const modal = await this.modalController.create({
       component: AboutPage,
@@ -38,6 +41,9 @@ export class AppComponent {
     return await modal.present();
   }
 
+  /**
+   * Method to open Favoritos Page
+   */
   public async favoritos() {
     const modal = await this.modalController.create({
       component: FavoritosPage,

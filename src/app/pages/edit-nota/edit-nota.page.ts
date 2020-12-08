@@ -31,12 +31,18 @@ export class EditNotaPage implements OnInit {
   ngOnInit() {
   }
 
+  /**
+   * Method to set values of nota to tasks
+   */
   ionViewDidEnter() {
     this.tasks.get('title').setValue(this.nota.titulo)
     this.tasks.get('description').setValue(this.nota.texto)
     this.tasks.get('favorite').setValue(this.nota.favorito)
   }
 
+  /**
+   * Method to change values of nota and come back to Tab1
+   */
   public async sendForm() {
     await this.presentLoading();
     let data: Nota = {
@@ -56,6 +62,9 @@ export class EditNotaPage implements OnInit {
       })
   }
 
+  /**
+   * Method to pause application a little time to load it
+   */
   async presentLoading() {
     const loading = await this.loadingController.create({
       cssClass: 'loading',
@@ -65,6 +74,10 @@ export class EditNotaPage implements OnInit {
     await loading.present();
   }
 
+  /**
+   * Method to show a message
+   * @param msg Message to show
+   */
   async presentToast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,
@@ -75,10 +88,16 @@ export class EditNotaPage implements OnInit {
     toast.present();
   }
 
+  /**
+   * Method to close Modal and come back to Tab1
+   */
   public goBack(){
     this.modalController.dismiss();
   }
 
+  /**
+   * Method to ask if user want to close Modal without saving
+   */
   public async presentAlertConfirm() {
     const alert = await this.alert.create({
       cssClass: 'alertDelete',

@@ -16,8 +16,8 @@
   </ion-refresher>
   <ion-list *ngIf="this.listaNotas.length > 0">
     <ion-item-sliding *ngFor="let nota of this.items; let i=index">
-      <ion-item-options side="start">
-        <ion-item-option color="danger" expandable (click)="this.presentAlertConfirm(nota.id)">
+      <ion-item-options side="start" (ionSwipe)="this.presentAlertConfirm(nota.id)">
+        <ion-item-option color="danger" expandable>
           <ion-icon name="trash" style="zoom: 1.5;"></ion-icon>
         </ion-item-option>
       </ion-item-options>
@@ -27,8 +27,8 @@
           <h1>{{nota.titulo}}</h1><br>{{nota.texto}}
         </ion-label>
       </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option style="--background:#ffa44f;" (click)="editaNota(nota)">
+      <ion-item-options side="end" (ionSwipe)="this.editaNota(nota)">
+        <ion-item-option style="--background:#ffa44f;" expandable>
           <ion-icon name="pencil" style="zoom: 1.5;"></ion-icon>
         </ion-item-option>
       </ion-item-options>

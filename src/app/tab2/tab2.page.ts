@@ -20,6 +20,9 @@ export class Tab2Page {
     })
   }
 
+  /**
+   * Method to call agregaNota() from Notas Service
+   */
   public async sendForm() {
     await this.presentLoading();
     let data: Nota = {
@@ -41,6 +44,9 @@ export class Tab2Page {
       })
   }
 
+  /**
+   * Method to pause application a little time to load it
+   */
   async presentLoading() {
     const loading = await this.loadingController.create({
       cssClass: 'loading',
@@ -50,6 +56,10 @@ export class Tab2Page {
     await loading.present();
   }
 
+  /**
+   * Method to show a message
+   * @param msg Message to show
+   */
   async presentToast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,

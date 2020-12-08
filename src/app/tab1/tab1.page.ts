@@ -13,7 +13,9 @@ export class Tab1Page {
 
   @ViewChild('search', { static: false }) search: IonSearchbar;
 
+  //Nota Array
   public listaNotas = [];
+  //Aux object
   public items: any;
 
   constructor(private notasS: NotasService,
@@ -23,6 +25,9 @@ export class Tab1Page {
     private loadingController: LoadingController,
     private actionSheetController: ActionSheetController) { }
 
+  /**
+   * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
+   */
   ionViewDidEnter() {
     this.notasS.cargarColeccion();
     this.cargaDatos();
@@ -32,6 +37,10 @@ export class Tab1Page {
     
   }
 
+  /**
+   * Method to get data from firebase and save it on listaNotas and items
+   * @param $event 
+   */
   public cargaDatos($event = null) {
     try {
       this.notasS.leeNotas()
@@ -54,6 +63,10 @@ export class Tab1Page {
     }
   }
 
+  /**
+   * Method to delete Nota from firebare
+   * @param id Nota key to delete
+   */
   public borraNota(id: any) {
     this.notasS.borraNota(id).then(() => {
       let tmp = [];
@@ -70,6 +83,10 @@ export class Tab1Page {
       })
   }
 
+  /**
+   * Method to call EditNota Page
+   * @param nota Nota to edit
+   */
   public async editaNota(nota: Nota) {
     const modal = await this.modalController.create({
       component: EditNotaPage,
@@ -85,11 +102,18 @@ export class Tab1Page {
     })
   }
 
+  /**
+   * Method to open Menu
+   */
   openFirt() {
     this.menu.enable(true, 'first');
     this.menu.open('first');
   }
 
+  /**
+   * Method to show alert if user try to delete a note
+   * @param id 
+   */
   public async presentAlertConfirm(id: any) {
     const alert = await this.alert.create({
       cssClass: 'alertDelete',
@@ -115,6 +139,10 @@ export class Tab1Page {
     await alert.present();
   }
 
+  /**
+   * Method to search notes
+   * @param ev Event to search
+   */
   public searchItems(ev: any) {
     const val = ev.target.value;
     this.items = this.listaNotas;
@@ -125,6 +153,10 @@ export class Tab1Page {
     }
   }
 
+  /**
+   * Method to set note to favorite
+   * @param nota Note setted favorite
+   */
   public async setFavorito(nota: Nota) {
     await this.presentLoading();
     let data: Nota = {
@@ -140,6 +172,9 @@ export class Tab1Page {
       })
   }
 
+  /**
+   * Method to pause application a little time to load it
+   */
   async presentLoading() {
     const loading = await this.loadingController.create({
       cssClass: 'loading',
@@ -149,6 +184,10 @@ export class Tab1Page {
     await loading.present();
   }
 
+  /**
+   * Method to show menu with some options when user click on a note
+   * @param nota Note clicked
+   */
   async presentActionSheet(nota: Nota) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Opciones',

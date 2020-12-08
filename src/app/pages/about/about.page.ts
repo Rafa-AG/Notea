@@ -11,23 +11,30 @@ import { browser } from 'protractor';
 })
 export class AboutPage implements OnInit {
 
-  constructor(private router: Router,
-    private modalController: ModalController,
-    private loadingController: LoadingController,
+  constructor(private modalController: ModalController,
     private iab: InAppBrowser) { }
 
-  twitter:string='https://twitter.com/illofali';
-  instagram:string='https://www.instagram.com/illo.rafa/';
+  //URL to developer Twitter account
+  twitter: string = 'https://twitter.com/illofali';
+  //URL to developer Instagram account
+  instagram: string = 'https://www.instagram.com/illo.rafa/';
 
   ngOnInit() {
   }
 
+  /**
+   * Method to close Modal and come back to Tab1
+   */
   public goBack() {
     this.modalController.dismiss();
   }
 
-  public openWithCordovaBrowser(url:string){
-    let target="_self";
+  /**
+   * Method to open browser
+   * @param url Link to open
+   */
+  public openWithCordovaBrowser(url: string) {
+    let target = "_self";
     this.iab.create(url, target);
   }
 

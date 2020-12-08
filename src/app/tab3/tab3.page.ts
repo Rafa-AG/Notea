@@ -11,23 +11,28 @@ import { AuthService } from '../services/auth.service';
 export class Tab3Page {
 
   constructor(private authS: AuthService,
-    private router: Router,
-    private nativeStorage: NativeStorage) { }
+    private router: Router) { }
 
-  public perfil={
-    token:-1,
-    name:'',
-    avatar:''
+  public perfil = {
+    token: -1,
+    name: '',
+    avatar: ''
   }
 
-  ionViewWillEnter(){
-    this.perfil={
-      token:this.authS.user.token,
-      name:this.authS.user.name,
-      avatar:this.authS.user.avatar
+  /**
+   * Method to set to perfil user logged values when page is opened
+   */
+  ionViewWillEnter() {
+    this.perfil = {
+      token: this.authS.user.token,
+      name: this.authS.user.name,
+      avatar: this.authS.user.avatar
     }
   }
 
+  /**
+   * Method to call logout() and isLogged() from Auth Service to log out user
+   */
   public async logout() {
     await this.authS.logout();
     if (!this.authS.isLogged()) {
