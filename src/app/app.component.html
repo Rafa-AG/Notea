@@ -17,7 +17,7 @@
           <ion-label style="padding-left: 2%">
             <p>Linterna</p>
           </ion-label>
-          <ion-toggle formControlName="linterna" (ionFocus)="openFlashlight()" (ionBlur)="closeFlashlight()"
+          <ion-toggle formControlName="linterna" (ionChange)="flash()"
             style="--background-checked: #ffa44f; --handle-background-checked: white"></ion-toggle>
         </ion-item>
       </ion-list>

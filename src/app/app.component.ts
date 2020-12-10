@@ -54,17 +54,9 @@ export class AppComponent {
     return await modal.present();
   }
 
-  public openFlashlight(){
-    this.flashlight.switchOn().then((respuesta)=>{
-      console.log(respuesta);
-    }).catch((err)=>{
-      console.log(err);
-    })
-  }
-
-  public closeFlashlight(){
-    this.flashlight.switchOff().then((res)=>{
-      console.log(res)
+  public flash(){
+    this.flashlight.toggle().then((res)=>{
+      console.log(res);
     }).catch((err)=>{
       console.log(err)
     })
