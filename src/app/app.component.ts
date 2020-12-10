@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './services/auth.service';
 import { FavoritosPage } from './pages/favoritos/favoritos.page';
 import { AboutPage } from './pages/about/about.page';
+import { Flashlight } from '@ionic-native/flashlight/ngx';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private authS: AuthService,
-    private modalController: ModalController) {
+    private modalController: ModalController,
+    private flashlight:Flashlight) {
     this.initializeApp();
   }
 
@@ -50,6 +52,22 @@ export class AppComponent {
       cssClass: 'my-custom-class'
     });
     return await modal.present();
+  }
+
+  public openFlashlight(){
+    this.flashlight.switchOn().then((respuesta)=>{
+      console.log(respuesta);
+    }).catch((err)=>{
+      console.log(err);
+    })
+  }
+
+  public closeFlashlight(){
+    this.flashlight.switchOff().then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.log(err)
+    })
   }
 
 }

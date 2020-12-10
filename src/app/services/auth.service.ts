@@ -2,7 +2,6 @@ import { Injectable, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
-import { rejects } from 'assert';
 import { Usuario } from '../model/usuario';
 
 @Injectable({

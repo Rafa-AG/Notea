@@ -18,6 +18,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { AuthService } from './services/auth.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Flashlight } from '@ionic-native/flashlight/ngx';
 
 @NgModule({
   declarations: [AppComponent, EditNotaPage],
@@ -38,6 +39,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     GooglePlus,
     AuthService,
     InAppBrowser,
+    Flashlight,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

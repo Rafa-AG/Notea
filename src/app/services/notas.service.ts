@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { Nota } from '../model/nota';
+import { Usuario } from '../model/usuario';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -13,12 +13,12 @@ export class NotasService {
   private myCollection: AngularFirestoreCollection<any>;
 
   constructor(private fire: AngularFirestore,
-    private authS:AuthService) {
+    private authS: AuthService) {
     this.myCollection = fire.collection<any>(authS.user.email);
   }
 
-  cargarColeccion(){
-    this.myCollection=this.fire.collection<any>(this.authS.user.email)
+  cargarColeccion() {
+    this.myCollection = this.fire.collection<any>(this.authS.user.email)
   }
 
   /**
