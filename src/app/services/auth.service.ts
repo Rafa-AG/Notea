@@ -3,23 +3,28 @@ import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { Usuario } from '../model/usuario';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit, CanActivate{
+export class AuthService implements OnInit, CanActivate {
 
   //Usuario without values
-  public user:Usuario = {
+  public user: Usuario = {
     token: -1,
     name: '',
     avatar: '',
     email: ''
   }
 
+  public users = [];
+  private items: Usuario[];
+
   constructor(private storage: NativeStorage,
     private google: GooglePlus,
-    private router: Router) { }
+    private router: Router,
+    private userS: UserService) { }
 
   /**
    * Method to get values of user with Native Storage at init of application
@@ -34,6 +39,7 @@ export class AuthService implements OnInit, CanActivate{
     if (u != null) {
       this.user = u;
     }
+    await this.cargaUsuarios();
   }
 
   /**
@@ -56,7 +62,7 @@ export class AuthService implements OnInit, CanActivate{
       token: -1,
       name: '',
       avatar: '',
-      email:''
+      email: ''
     }
     this.storage.setItem('user', this.user);
   }
@@ -72,7 +78,10 @@ export class AuthService implements OnInit, CanActivate{
           token: u['accessToken'],
           name: u['displayName'],
           avatar: u['imageUrl'],
-          email:u['email']
+          email: u['email']
+        }
+        if (this.isInside(this.user) == false) {
+          this.userS.agregaUsuario(this.user);
         }
       }
     } catch (err) {
@@ -80,7 +89,7 @@ export class AuthService implements OnInit, CanActivate{
         token: -1,
         name: '',
         avatar: '',
-        email:''
+        email: ''
       }
       console.log(err);
     }
@@ -97,6 +106,35 @@ export class AuthService implements OnInit, CanActivate{
       return false;
     }
     return true;
+  }
+
+  cargaUsuarios() {
+    try {
+      this.userS.obtenerUsuarios()
+        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
+          info.forEach((doc) => {
+            let user = {
+              ...doc.data()
+            }
+            this.users.push(user);
+          });
+        })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  isInside(usuario: Usuario): boolean {
+    let inside: boolean = false;
+    this.items = this.users;
+    if (this.items.length > 0) {
+      this.items.forEach((user) => {
+        if (user.email === usuario.email) {
+          inside = true;
+        }
+      })
+    }
+    return inside;
   }
 
 }
