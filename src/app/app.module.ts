@@ -19,6 +19,8 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { AuthService } from './services/auth.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Flashlight } from '@ionic-native/flashlight/ngx';
+import { UserService } from './services/user.service';
+import { AmigosService } from './services/amigos.service';
 
 @NgModule({
   declarations: [AppComponent, EditNotaPage],
@@ -40,6 +42,8 @@ import { Flashlight } from '@ionic-native/flashlight/ngx';
     AuthService,
     InAppBrowser,
     Flashlight,
+    UserService,
+    AmigosService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

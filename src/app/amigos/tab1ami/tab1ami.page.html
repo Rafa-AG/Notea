@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #ff7300;">
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false" menu="first" color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title color="light">Mis Amigos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div style="background-color: #ffa44f;">
+    <ion-searchbar #search debounce="500" (ionChange)="searchItems($event)" type="text"></ion-searchbar>
+  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="this.listaAmigos.length > 0">
+    <ion-item *ngFor="let amigo of this.items; let i=index">
+      <ion-label>
+        <h2>{{amigo.email}}</h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

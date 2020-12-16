@@ -7,19 +7,34 @@
     </ion-header>
     <ion-content>
       <ion-list lines="full">
-        <ion-item (click)="favoritos()">
-          <ion-icon name="star-outline"></ion-icon>
-          <ion-label style="padding-left: 2%">
-            <p>Favoritos</p>
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label style="padding-left: 2%">
-            <p>Linterna</p>
-          </ion-label>
-          <ion-toggle formControlName="linterna" (ionChange)="flash()"
-            style="--background-checked: #ffa44f; --handle-background-checked: white"></ion-toggle>
-        </ion-item>
+        <ion-menu-toggle auto-hide="true">
+          <ion-item [routerLink]="['tabs']">
+            <ion-icon name="home-outline"></ion-icon>
+            <ion-label style="padding-left: 2%">
+              <p>Home</p>
+            </ion-label>
+          </ion-item>
+          <ion-item [routerLink]="['tabsami']">
+            <ion-icon name="people-outline"></ion-icon>
+            <ion-label style="padding-left: 2%">
+              <p>Amigos</p>
+            </ion-label>
+          </ion-item>
+          <ion-item (click)="favoritos()">
+            <ion-icon name="star-outline"></ion-icon>
+            <ion-label style="padding-left: 2%">
+              <p>Favoritos</p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="flashlight-outline"></ion-icon>
+            <ion-label style="padding-left: 2%">
+              <p>Linterna</p>
+            </ion-label>
+            <ion-toggle formControlName="linterna" (ionChange)="flash()"
+              style="--background-checked: #ffa44f; --handle-background-checked: white"></ion-toggle>
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
     </ion-content>
     <ion-footer>

@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Nota } from 'src/app/model/nota';
+import { LoadingService } from 'src/app/services/loading.service';
 import { NotasService } from 'src/app/services/notas.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-edit-nota',
@@ -17,16 +19,16 @@ export class EditNotaPage implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private notasS: NotasService,
-    public loadingController: LoadingController,
-    public toastController: ToastController,
     private modalController: ModalController,
-    private alert:AlertController) {
-      this.tasks = this.formBuilder.group({
-        title: ['', Validators.required],
-        description: [''],
-        favorite:[]
-      })
-    }
+    private alertC: AlertController,
+    private toastS: ToastService,
+    private loadingS: LoadingService) {
+    this.tasks = this.formBuilder.group({
+      title: ['', Validators.required],
+      description: [''],
+      favorite: []
+    })
+  }
 
   ngOnInit() {
   }
@@ -44,7 +46,7 @@ export class EditNotaPage implements OnInit {
    * Method to change values of nota and come back to Tab1
    */
   public async sendForm() {
-    await this.presentLoading();
+    await this.loadingS.presentLoading();
     let data: Nota = {
       titulo: this.tasks.get('title').value,
       texto: this.tasks.get('description').value,
@@ -52,46 +54,20 @@ export class EditNotaPage implements OnInit {
     }
     this.notasS.actualizarNota(this.nota.id, data)
       .then((respuesta) => {
-        this.loadingController.dismiss();
-        this.presentToast('Nota guardada');
-        this.modalController.dismiss();
+        this.loadingS.stopLoading();
+        this.toastS.presentToast('Nota guardada');
+        this.loadingS.stopLoading();
       })
       .catch((err) => {
-        this.loadingController.dismiss();
-        this.presentToast('Error al guardar la nota');
+        this.loadingS.stopLoading();
+        this.toastS.presentToast('Error al guardar la nota');
       })
-  }
-
-  /**
-   * Method to pause application a little time to load it
-   */
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      cssClass: 'loading',
-      message: '',
-      spinner: 'crescent'
-    });
-    await loading.present();
-  }
-
-  /**
-   * Method to show a message
-   * @param msg Message to show
-   */
-  async presentToast(msg: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      cssClass: 'toast',
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
   }
 
   /**
    * Method to close Modal and come back to Tab1
    */
-  public goBack(){
+  public goBack() {
     this.modalController.dismiss();
   }
 
@@ -99,7 +75,7 @@ export class EditNotaPage implements OnInit {
    * Method to ask if user want to close Modal without saving
    */
   public async presentAlertConfirm() {
-    const alert = await this.alert.create({
+    const alert = await this.alertC.create({
       cssClass: 'alertDelete',
       header: 'Cancelar',
       message: '¿Está seguro de que quiere salir sin guardar la nota?',
@@ -112,7 +88,7 @@ export class EditNotaPage implements OnInit {
           }
         }, {
           text: 'Sí',
-          cssClass:'delete',
+          cssClass: 'delete',
           handler: () => {
             this.goBack();
           }

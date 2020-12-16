@@ -7,6 +7,7 @@ import { AuthService } from './services/auth.service';
 import { FavoritosPage } from './pages/favoritos/favoritos.page';
 import { AboutPage } from './pages/about/about.page';
 import { Flashlight } from '@ionic-native/flashlight/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,13 +15,12 @@ import { Flashlight } from '@ionic-native/flashlight/ngx';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
-  constructor(
-    private platform: Platform,
+  constructor(private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private authS: AuthService,
     private modalController: ModalController,
-    private flashlight:Flashlight) {
+    private flashlight: Flashlight) {
     this.initializeApp();
   }
 
@@ -54,12 +54,14 @@ export class AppComponent {
     return await modal.present();
   }
 
-  public flash(){
-    this.flashlight.toggle().then((res)=>{
+  public flash() {
+    this.flashlight.toggle().then((res) => {
       console.log(res);
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err)
     })
   }
+
+
 
 }

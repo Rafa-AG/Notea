@@ -14,7 +14,7 @@ export class UserService {
     this.userCollection = this.fire.collection<any>('users');
   }
 
-  cargarDocumento() {
+  cargarColeccion() {
     this.userCollection = this.fire.collection<any>('users');
   }
 
@@ -32,6 +32,10 @@ export class UserService {
 
   obtenerUsuarios(): Observable<any> {
     return this.userCollection.get();
+  }
+
+  actualizarUsuario(email:any, nuevoUsuario:Usuario):Promise<void>{
+    return this.userCollection.doc(email).set(nuevoUsuario);
   }
 
 }

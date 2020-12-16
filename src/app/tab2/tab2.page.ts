@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Nota } from '../model/nota';
+import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-tab2',
@@ -13,7 +15,10 @@ export class Tab2Page {
 
   public tasks: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private notasS: NotasService, public loadingController: LoadingController, public toastController: ToastController) {
+  constructor(private formBuilder: FormBuilder, 
+    private notasS: NotasService,
+    private loadingS:LoadingService,
+    private toastS:ToastService) {
     this.tasks = this.formBuilder.group({
       title: ['', Validators.required],
       description: ['']
@@ -24,7 +29,7 @@ export class Tab2Page {
    * Method to call agregaNota() from Notas Service
    */
   public async sendForm() {
-    await this.presentLoading();
+    await this.loadingS.presentLoading();
     let data: Nota = {
       titulo: this.tasks.get('title').value,
       texto: this.tasks.get('description').value
@@ -35,39 +40,13 @@ export class Tab2Page {
           title: '',
           description: ''
         })
-        this.loadingController.dismiss();
-        this.presentToast('Nota guardada');
+        this.loadingS.stopLoading();
+        this.toastS.presentToast('Nota guardada');
       })
       .catch((err) => {
-        this.loadingController.dismiss();
-        this.presentToast('Error al guardar la nota');
+        this.loadingS.stopLoading();
+        this.toastS.presentToast('Error al guardar la nota');
       })
-  }
-
-  /**
-   * Method to pause application a little time to load it
-   */
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      cssClass: 'loading',
-      message: '', 
-      spinner: 'crescent'
-    });
-    await loading.present();
-  }
-
-  /**
-   * Method to show a message
-   * @param msg Message to show
-   */
-  async presentToast(msg: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      cssClass: 'toast',
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
   }
 
 }

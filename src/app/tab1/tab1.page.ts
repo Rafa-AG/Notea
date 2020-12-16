@@ -1,7 +1,8 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { ActionSheetController, AlertController, IonSearchbar, LoadingController, MenuController, ModalController } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
 import { Nota } from '../model/nota';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
+import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
 
 @Component({
@@ -22,8 +23,8 @@ export class Tab1Page {
     private modalController: ModalController,
     private menu: MenuController,
     private alert: AlertController,
-    private loadingController: LoadingController,
-    private actionSheetController: ActionSheetController) { }
+    private actionSheetController: ActionSheetController,
+    private loadingS: LoadingService) { }
 
   /**
    * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
@@ -34,7 +35,7 @@ export class Tab1Page {
   }
 
   ngOnInit() {
-    
+
   }
 
   /**
@@ -54,6 +55,14 @@ export class Tab1Page {
             this.listaNotas.push(nota);
             this.items = this.listaNotas;
           });
+          let tmp = [];
+          this.listaNotas.forEach((n) => {
+            if (n.email == null) {
+              tmp.push(n);
+            }
+          })
+          this.listaNotas = tmp;
+          this.items = this.listaNotas;
           if ($event) {
             $event.target.complete();
           }
@@ -128,7 +137,7 @@ export class Tab1Page {
           }
         }, {
           text: 'Eliminar',
-          cssClass:'delete',
+          cssClass: 'delete',
           handler: () => {
             this.borraNota(id);
           }
@@ -158,7 +167,7 @@ export class Tab1Page {
    * @param nota Note setted favorite
    */
   public async setFavorito(nota: Nota) {
-    await this.presentLoading();
+    await this.loadingS.presentLoading();
     let data: Nota = {
       titulo: nota.titulo,
       texto: nota.texto,
@@ -166,22 +175,10 @@ export class Tab1Page {
     }
     this.notasS.actualizarNota(nota.id, data)
       .then((respuesta) => {
-        this.loadingController.dismiss();
+        this.loadingS.stopLoading();
       }).catch((err) => {
-        this.loadingController.dismiss();
+        this.loadingS.stopLoading();
       })
-  }
-
-  /**
-   * Method to pause application a little time to load it
-   */
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      cssClass: 'loading',
-      message: '',
-      spinner: 'crescent',
-    });
-    await loading.present();
   }
 
   /**

@@ -21,9 +21,9 @@ const routes: Routes = [
     loadChildren: () => import('./pages/about/about.module').then( m => m.AboutPageModule)
   },
   {
-    path: 'amigos',
-    loadChildren: () => import('./pages/amigos/amigos.module').then( m => m.AmigosPageModule)
-  }
+    path: 'tabsami',
+    loadChildren: () => import('./amigos/tabsami/tabsami.module').then( m => m.TabsamiPageModule)
+  },
 ];
 @NgModule({
   imports: [
