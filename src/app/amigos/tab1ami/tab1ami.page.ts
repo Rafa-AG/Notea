@@ -27,11 +27,10 @@ export class Tab1amiPage implements OnInit {
         .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
           this.listaAmigos = [];
           info.forEach((doc) => {
-            let nota = {
-              id: doc.id,
+            let amigo = {
               ...doc.data()
             }
-            this.listaAmigos.push(nota);
+            this.listaAmigos.push(amigo);
             this.items = this.listaAmigos;
           });
           let tmp = [];
@@ -56,7 +55,7 @@ export class Tab1amiPage implements OnInit {
     this.items = this.listaAmigos;
     if (val && val.trim() !== '') {
       this.items = this.items.filter((item) => {
-        return (item.email.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        return (item.nombre.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
   }

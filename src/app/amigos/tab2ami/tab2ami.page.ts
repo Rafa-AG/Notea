@@ -29,12 +29,33 @@ export class Tab2amiPage implements OnInit {
     this.userS.cargarColeccion();
     this.notasS.cargarColeccion();
     this.amigoS.cargarColeccion();
-    this.cargaAmigos();
     this.cargaDatos();
   }
 
   public cargaDatos($event = null) {
     try {
+      this.notasS.leeNotas()
+        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
+          this.listaAmigos = [];
+          info.forEach((doc) => {
+            let amigo = {
+              ...doc.data()
+            }
+            this.listaAmigos.push(amigo);
+          });
+          if (this.listaAmigos.length > 0) {
+            let tmp = []
+            this.listaAmigos.forEach((a) => {
+              if (a.email != null) {
+                tmp.push(a);
+              }
+            })
+            this.listaAmigos = tmp;
+          }
+          if ($event) {
+            $event.target.complete();
+          }
+        })
       this.userS.obtenerUsuarios()
         .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
           this.listaUsuarios = [];
@@ -44,47 +65,21 @@ export class Tab2amiPage implements OnInit {
             }
             if (user.email !== this.authS.user.email) {
               this.listaUsuarios.push(user);
-              this.items = this.listaUsuarios;
+              this.items = this.listaUsuarios
             }
           });
-          let tmp=[]
-          this.listaAmigos.forEach((a)=>{
-            this.listaUsuarios.forEach((u)=>{
-              if(a.email!==u.email){
-                tmp.push(u)
-              }
+          if (this.listaAmigos.length > 0) {
+            let tmp = []
+            this.listaAmigos.forEach((a) => {
+              this.listaUsuarios.forEach((u) => {
+                if (a.email !== u.email) {
+                  tmp.push(u)
+                }
+              })
             })
-          })
-          this.listaUsuarios=tmp;
-          this.items=this.listaUsuarios;
-          if ($event) {
-            $event.target.complete();
+            this.listaUsuarios = tmp;
+            this.items = this.listaUsuarios
           }
-        })
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  public cargaAmigos($event = null) {
-    try {
-      this.notasS.leeNotas()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          this.listaAmigos = [];
-          info.forEach((doc) => {
-            let nota = {
-              id: doc.id,
-              ...doc.data()
-            }
-            this.listaAmigos.push(nota);
-          });
-          let tmp = [];
-          this.listaAmigos.forEach((a) => {
-            if (a.email != null) {
-              tmp.push(a);
-            }
-          })
-          this.listaAmigos = tmp;
           if ($event) {
             $event.target.complete();
           }
