@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
 import { Nota } from '../model/nota';
+import { CodigoqrPage } from '../pages/codigoqr/codigoqr.page';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
 import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
@@ -185,7 +186,7 @@ export class Tab1Page {
    * Method to show menu with some options when user click on a note
    * @param nota Note clicked
    */
-  async presentActionSheet(nota: Nota) {
+  async actionSheetPrincipal(nota: Nota) {
     const actionSheet = await this.actionSheetController.create({
       header: 'Opciones',
       cssClass: 'my-custom-class',
@@ -196,7 +197,15 @@ export class Tab1Page {
           nota.favorito = true;
           this.setFavorito(nota);
         }
-      }, {
+      },
+      {
+        text: 'Compartir',
+        icon: 'share-outline',
+        handler: () => {
+          this.actionSheetSecundario(nota);
+        }
+      },
+      {
         text: 'Cancelar',
         icon: 'close',
         role: 'cancel',
@@ -206,6 +215,45 @@ export class Tab1Page {
       }]
     });
     await actionSheet.present();
+  }
+
+  async actionSheetSecundario(nota: Nota) {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Opciones',
+      cssClass: 'my-custom-class',
+      buttons: [
+        {
+          text: 'Código-QR',
+          icon: 'qr-code-outline',
+          handler: () => {
+            this.codigoQR(nota);
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+
+          }
+        }]
+    });
+    await actionSheet.present();
+  }
+
+  public async codigoQR(nota: Nota) {
+    const modal = await this.modalController.create({
+      component: CodigoqrPage,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        nota: nota
+      }
+    });
+    modal.present();
+
+    return await modal.onDidDismiss().then((load) => {
+      this.cargaDatos();
+    })
   }
 
 }

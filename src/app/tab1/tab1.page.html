@@ -21,7 +21,7 @@
           <ion-icon name="trash" style="zoom: 1.5;"></ion-icon>
         </ion-item-option>
       </ion-item-options>
-      <ion-item (click)="presentActionSheet(nota)">
+      <ion-item (click)="actionSheetPrincipal(nota)">
         <ion-icon slot="end" name="star" *ngIf="nota.favorito"></ion-icon>
         <ion-label>
           <h1>{{nota.titulo}}</h1><br>{{nota.texto}}

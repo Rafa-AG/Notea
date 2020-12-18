@@ -22,6 +22,10 @@ import { Flashlight } from '@ionic-native/flashlight/ngx';
 import { UserService } from './services/user.service';
 import { AmigosService } from './services/amigos.service';
 
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+
 @NgModule({
   declarations: [AppComponent, EditNotaPage],
   entryComponents: [EditNotaPage],
@@ -44,6 +48,9 @@ import { AmigosService } from './services/amigos.service';
     Flashlight,
     UserService,
     AmigosService,
+    NgxQRCodeModule,
+    BarcodeScanner,
+    Base64ToGallery,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
