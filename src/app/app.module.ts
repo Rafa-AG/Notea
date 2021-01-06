@@ -19,18 +19,16 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { AuthService } from './services/auth.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Flashlight } from '@ionic-native/flashlight/ngx';
-import { UserService } from './services/user.service';
-import { AmigosService } from './services/amigos.service';
+import { HttpClientModule } from '@angular/common/http';
 
-import { NgxQRCodeModule } from 'ngx-qrcode2';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
+import { HTTP } from '@ionic-native/http/ngx'
 
 @NgModule({
   declarations: [AppComponent, EditNotaPage],
   entryComponents: [EditNotaPage],
   imports: [
     BrowserModule,
+    HttpClientModule,
     ReactiveFormsModule,
     IonicModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebaseConfig),
@@ -46,11 +44,7 @@ import { Base64ToGallery } from '@ionic-native/base64-to-gallery/ngx';
     AuthService,
     InAppBrowser,
     Flashlight,
-    UserService,
-    AmigosService,
-    NgxQRCodeModule,
-    BarcodeScanner,
-    Base64ToGallery,
+    HTTP,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

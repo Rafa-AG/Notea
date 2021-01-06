@@ -2,8 +2,9 @@
  * Model interface Usuario
  */
 export interface Usuario{
-    token:any,
+    token?:any,
+    id?:number,
     name:string,
-    avatar:string,
+    avatar?:string,
     email:string,
 }

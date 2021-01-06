@@ -11,7 +11,12 @@
   <div style="background-color: #ffa44f;">
     <ion-searchbar #search debounce="500" (ionChange)="searchItems($event)" type="text"></ion-searchbar>
   </div>
-  <!-- <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
+  <!--
+    <ion-button (click)="insertar()">
+  prueba
+</ion-button>
+-->
+  <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list *ngIf="this.listaAmigos.length > 0">
@@ -20,5 +25,5 @@
         <h2>{{amigo.nombre}}</h2>
       </ion-label>
     </ion-item>
-  </ion-list> -->
+  </ion-list>
 </ion-content>

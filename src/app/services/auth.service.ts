@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { Usuario } from '../model/usuario';
-import { UserService } from './user.service';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class AuthService implements OnInit, CanActivate {
   constructor(private storage: NativeStorage,
     private google: GooglePlus,
     private router: Router,
-    private userS: UserService) { }
+    private httpS: HttpService) { }
 
   /**
    * Method to get values of user with Native Storage at init of application
@@ -81,7 +81,11 @@ export class AuthService implements OnInit, CanActivate {
           email: u['email']
         }
         if (this.isInside(this.user) == false) {
-          this.userS.agregaUsuario(this.user);
+          this.httpS.insertarUsuario(this.user).then((res) => {
+            console.log(res);
+          }).catch((err) => {
+            console.log(err);
+          })
         }
       }
     } catch (err) {
@@ -110,17 +114,15 @@ export class AuthService implements OnInit, CanActivate {
 
   cargaUsuarios() {
     try {
-      this.userS.obtenerUsuarios()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          info.forEach((doc) => {
-            let user = {
-              ...doc.data()
-            }
-            this.users.push(user);
-          });
-        })
+      this.httpS.obtenerUsuarios().then((res) => {
+        let data = res.data;
+        data = JSON.parse(data);
+        this.users = data;
+      }).catch((err) => {
+        console.log(err)
+      })
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
   }
 

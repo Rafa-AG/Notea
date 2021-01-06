@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
 import { Nota } from '../model/nota';
-import { CodigoqrPage } from '../pages/codigoqr/codigoqr.page';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
 import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
@@ -226,7 +225,6 @@ export class Tab1Page {
           text: 'Código-QR',
           icon: 'qr-code-outline',
           handler: () => {
-            this.codigoQR(nota);
           }
         },
         {
@@ -239,21 +237,6 @@ export class Tab1Page {
         }]
     });
     await actionSheet.present();
-  }
-
-  public async codigoQR(nota: Nota) {
-    const modal = await this.modalController.create({
-      component: CodigoqrPage,
-      cssClass: 'my-custom-class',
-      componentProps: {
-        nota: nota
-      }
-    });
-    modal.present();
-
-    return await modal.onDidDismiss().then((load) => {
-      this.cargaDatos();
-    })
   }
 
 }

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Amigo } from 'src/app/model/amigo';
-import { AmigosService } from 'src/app/services/amigos.service';
-import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { HttpService } from 'src/app/services/http.service';
 import { NotasService } from 'src/app/services/notas.service';
 
 @Component({
@@ -13,122 +11,33 @@ import { NotasService } from 'src/app/services/notas.service';
 export class Tab2amiPage implements OnInit {
 
   private listaUsuarios = [];
-  private listaAmigos = [];
   private items = [];
-  private amigo: Amigo = {
-    email: '',
-    nombre: ''
-  }
+  private user;
 
-  constructor(private userS: UserService,
-    private amigoS: AmigosService,
-    private authS: AuthService,
-    private notasS: NotasService) { }
+  constructor(private authS: AuthService,
+    private httpS: HttpService) { }
 
   ngOnInit() {
-    this.userS.cargarColeccion();
-    this.notasS.cargarColeccion();
-    this.amigoS.cargarColeccion();
+    this.userLogged();
     this.cargaDatos();
   }
 
   public cargaDatos($event = null) {
     try {
-      this.notasS.leeNotas()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          this.listaAmigos = [];
-          info.forEach((doc) => {
-            let amigo = {
-              ...doc.data()
-            }
-            this.listaAmigos.push(amigo);
-          });
-          if (this.listaAmigos.length > 0) {
-            let tmp = []
-            this.listaAmigos.forEach((a) => {
-              if (a.email != null) {
-                tmp.push(a);
-              }
-            })
-            this.listaAmigos = tmp;
-          }
-          if ($event) {
-            $event.target.complete();
-          }
-        })
-      this.userS.obtenerUsuarios()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          this.listaUsuarios = [];
-          info.forEach((doc) => {
-            let user = {
-              ...doc.data()
-            }
-            if (user.email !== this.authS.user.email) {
-              this.listaUsuarios.push(user);
-              this.items = this.listaUsuarios
-            }
-          });
-          if (this.listaAmigos.length > 0) {
-            let tmp = []
-            this.listaAmigos.forEach((a) => {
-              this.listaUsuarios.forEach((u) => {
-                if (a.email !== u.email) {
-                  tmp.push(u)
-                }
-              })
-            })
-            this.listaUsuarios = tmp;
-            this.items = this.listaUsuarios
-          }
-          if ($event) {
-            $event.target.complete();
-          }
-        })
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  obtenerUsuario(email: string): any {
-    let user;
-    try {
-      this.userS.obtenerUsuarios().subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-        info.forEach((doc) => {
-          user = {
-            ...doc.data()
-          }
-          this.items.push(user)
-        })
-        this.items.forEach((u) => {
-          if (u.email === email) {
-            return u;
+      this.httpS.obtenerUsuarios().then((res) => {
+        let aux = []
+        let data = res.data;
+        data = JSON.parse(data);
+        aux = data;
+        aux.forEach((u) => {
+          if (u.email !== this.authS.user.email) {
+            this.listaUsuarios.push(u);
+            this.items = this.listaUsuarios;
           }
         })
       })
     } catch (err) {
       console.log(err);
-    }
-  }
-
-  añadirAmigo(amigo: Amigo) {
-    this.amigoS.agregaAmigo(amigo).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
-
-  hacerAmigo(email: string) {
-    if (email != null) {
-      this.listaUsuarios.forEach((u) => {
-        if (u.email === email) {
-          this.amigo = {
-            email: u.email,
-            nombre: u.name
-          }
-        }
-      })
-      this.añadirAmigo(this.amigo);
     }
   }
 
@@ -140,6 +49,20 @@ export class Tab2amiPage implements OnInit {
         return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
+  }
+
+  public userLogged() {
+    let aux = [];
+    this.httpS.obtenerUsuarios().then((res) => {
+      let data = res.data;
+      data = JSON.parse(data);
+      aux = data;
+      aux.forEach((u) => {
+        if (u.email === this.authS.user.email) {
+          this.user = u;
+        }
+      })
+    })
   }
 
 }

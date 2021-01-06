@@ -24,10 +24,6 @@ const routes: Routes = [
     path: 'tabsami',
     loadChildren: () => import('./amigos/tabsami/tabsami.module').then( m => m.TabsamiPageModule)
   },
-  {
-    path: 'codigoqr',
-    loadChildren: () => import('./pages/codigoqr/codigoqr.module').then( m => m.CodigoqrPageModule)
-  },
 ];
 @NgModule({
   imports: [

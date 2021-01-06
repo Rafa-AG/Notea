@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar } from '@ionic/angular';
+import { Usuario } from 'src/app/model/usuario';
+import { AuthService } from 'src/app/services/auth.service';
+import { HttpService } from 'src/app/services/http.service';
 import { NotasService } from 'src/app/services/notas.service';
 
 @Component({
@@ -12,42 +15,80 @@ export class Tab1amiPage implements OnInit {
   @ViewChild('search', { static: false }) search: IonSearchbar;
 
   private listaAmigos = [];
-  private items: any;
+  private tmp = [];
+  private items = [];
+  private user = {
+    id: 0,
+    email: '',
+    nombre: ''
+  };
 
-  constructor(private notasS: NotasService) { }
+  constructor(private httpS: HttpService,
+    private authS: AuthService) { }
 
   ngOnInit() {
-    this.notasS.cargarColeccion();
+    this.authS.cargaUsuarios();
     this.cargaDatos();
   }
 
   public cargaDatos($event = null) {
+    this.userLogged();
     try {
-      this.notasS.leeNotas()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          this.listaAmigos = [];
-          info.forEach((doc) => {
-            let amigo = {
-              ...doc.data()
-            }
-            this.listaAmigos.push(amigo);
-            this.items = this.listaAmigos;
-          });
-          let tmp = [];
-          this.listaAmigos.forEach((a) => {
-            if (a.email != null) {
-              tmp.push(a);
-            }
-          })
-          this.listaAmigos = tmp;
-          this.items = this.listaAmigos;
-          if ($event) {
-            $event.target.complete();
-          }
-        })
+      this.httpS.obtenerAmigos(1).then((res) => {
+        let data = res.data;
+        data = JSON.parse(data);
+        this.tmp = data;
+        this.getFriends();
+        if ($event) {
+          $event.target.complete();
+        }
+      })
     } catch (err) {
       console.log(err);
     }
+  }
+
+  public userLogged() {
+    let aux = [];
+    this.httpS.obtenerUsuarios().then((res) => {
+      let data = res.data;
+      data = JSON.parse(data);
+      aux = data;
+      aux.forEach((u) => {
+        if (u.email === this.authS.user.email) {
+          this.user = u;
+        }
+      })
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  public getFriends() {
+    let aux = [];
+    this.tmp.forEach((u) => {
+      this.httpS.getUserByID(u.amigo).then((res) => {
+        let data = res.data;
+        data = JSON.parse(data);
+        aux = data;
+        aux.forEach((a) => {
+          if (this.isFriend(a.email) === false) {
+            this.listaAmigos.push(a);
+            this.items = this.listaAmigos;
+          }
+        })
+      })
+    })
+  }
+
+  public isFriend(email: string): boolean {
+    let result: boolean = false;
+    this.listaAmigos.forEach((u) => {
+      if (u.email === email) {
+        result = true;
+      }
+    })
+    return result;
   }
 
   public searchItems(ev: any) {
@@ -59,5 +100,60 @@ export class Tab1amiPage implements OnInit {
       })
     }
   }
+
+  /*public prueba() {
+    this.http.get('https://ralba-restful.herokuapp.com/clientes', {}, { 'apikey': 'proyectoIonic' }).then((res) => {
+      console.log(res);
+      let data = res.data;
+      data = JSON.parse(data);
+      console.log(data)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }*/
+
+  /*public obtener() {
+    this.httpS.obtenerNota(1).then((res) => {
+      let data = res.data;
+      this.prueba = JSON.parse(data);
+      console.log(this.prueba)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  public insertar() {
+    this.httpS.insertarNota('prueba', 'esto es otra prueba loco', 1).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  public eliminar() {
+    this.httpS.eliminarNota(4).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  public editar(){
+    this.httpS.editarNota(1, 'otra prueba', 'es una prueba para editar', 1).then((res)=>{
+      console.log(res);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+  
+  public obtener(){
+    this.httpS.getUserByEmail('joeplays69@gmail.com').then((res) => {
+      let data = res.data;
+      data = JSON.parse(data);
+      console.log(data);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }*/
 
 }

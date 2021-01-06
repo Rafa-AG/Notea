@@ -8,5 +8,6 @@ export interface Nota{
     fecha?:any,
     coordenadas?:any,
     imagen?:any
-    favorito?:boolean
+    favorito?:boolean,
+    id_usuario?:number
 }
