@@ -37,13 +37,13 @@ export class HttpService {
     return this.http.get(`https://ralba-restful.herokuapp.com/usuarios/${id}`, {}, { 'apikey': 'proyectoIonic' });
   }
 
-  getUserByEmail(email: string): Promise<any> {
+  /*getUserByEmail(email: string): Promise<any> {
     return this.http.get('https://ralba-restful.herokuapp.com/usuarios', {
       email: email
     }, { 'apikey': 'proyectoIonic' })
-  }
+  }*/
 
-  obtenerUsuarios(): Promise<any> {
+  getAllUsers(): Promise<any> {
     return this.http.get('https://ralba-restful.herokuapp.com/usuarios', {}, { 'apikey': 'proyectoIonic' })
   }
 

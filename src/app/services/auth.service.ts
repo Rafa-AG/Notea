@@ -114,7 +114,7 @@ export class AuthService implements OnInit, CanActivate {
 
   cargaUsuarios() {
     try {
-      this.httpS.obtenerUsuarios().then((res) => {
+      this.httpS.getAllUsers().then((res) => {
         let data = res.data;
         data = JSON.parse(data);
         this.users = data;

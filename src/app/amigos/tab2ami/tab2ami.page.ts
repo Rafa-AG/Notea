@@ -11,34 +11,105 @@ import { NotasService } from 'src/app/services/notas.service';
 export class Tab2amiPage implements OnInit {
 
   private listaUsuarios = [];
+  private listaAmigos = [];
+  private auxA = [];
+  private tmp = [];
   private items = [];
-  private user;
+  private user = {
+    id: 0,
+    email: '',
+    nombre: ''
+  };
 
   constructor(private authS: AuthService,
     private httpS: HttpService) { }
 
   ngOnInit() {
     this.userLogged();
+    this.authS.cargaUsuarios();
     this.cargaDatos();
   }
 
   public cargaDatos($event = null) {
     try {
-      this.httpS.obtenerUsuarios().then((res) => {
-        let aux = []
+      this.getFriends();
+      this.httpS.getAllUsers().then((res) => {
         let data = res.data;
-        data = JSON.parse(data);
-        aux = data;
-        aux.forEach((u) => {
-          if (u.email !== this.authS.user.email) {
+        this.tmp = JSON.parse(data);
+        this.tmp.forEach((u) => {
+          if (this.isFriend(u.email) === false && u.email !== this.user.email && this.isInside(u.email) === false) {
             this.listaUsuarios.push(u);
             this.items = this.listaUsuarios;
           }
+        })
+        if ($event) {
+          $event.target.complete();
+        }
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  public async getFriends() {
+    this.userLogged();
+    try {
+      let aux = [];
+      await this.httpS.obtenerAmigos(this.user.id).then((res) => {
+        let data = res.data;
+        this.auxA = JSON.parse(data);
+        console.log(this.auxA)
+        this.auxA.forEach((u) => {
+          this.httpS.getUserByID(u.amigo).then((res) => {
+            let d = res.data;
+            aux = JSON.parse(d);
+            aux.forEach((a) => {
+              if (this.isFriend(a.email) === false) {
+                this.listaAmigos.push(a);
+              }
+            })
+          })
         })
       })
     } catch (err) {
       console.log(err);
     }
+  }
+
+  public isFriend(email: string): boolean {
+    let result: boolean = false;
+    this.listaAmigos.forEach((u) => {
+      if (u.email === email) {
+        result = true;
+      }
+    })
+    return result;
+  }
+
+  public isInside(email: string): boolean {
+    let result: boolean = false;
+    this.listaUsuarios.forEach((u) => {
+      if (u.email === email) {
+        result = true;
+      }
+    })
+    return result;
+  }
+
+  public userLogged() {
+    let aux = [];
+    this.httpS.getAllUsers().then((res) => {
+      let data = res.data;
+      data = JSON.parse(data);
+      aux = data;
+      aux.forEach((u) => {
+        if (u.email === this.authS.user.email) {
+          this.user = u;
+        }
+      })
+    }).catch((err) => {
+      console.log(err);
+    })
   }
 
   public searchItems(ev: any) {
@@ -49,20 +120,6 @@ export class Tab2amiPage implements OnInit {
         return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
-  }
-
-  public userLogged() {
-    let aux = [];
-    this.httpS.obtenerUsuarios().then((res) => {
-      let data = res.data;
-      data = JSON.parse(data);
-      aux = data;
-      aux.forEach((u) => {
-        if (u.email === this.authS.user.email) {
-          this.user = u;
-        }
-      })
-    })
   }
 
 }

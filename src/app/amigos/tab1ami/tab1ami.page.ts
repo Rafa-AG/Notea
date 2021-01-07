@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar } from '@ionic/angular';
-import { Usuario } from 'src/app/model/usuario';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { NotasService } from 'src/app/services/notas.service';
 
 @Component({
   selector: 'app-tab1ami',
@@ -34,7 +32,7 @@ export class Tab1amiPage implements OnInit {
   public cargaDatos($event = null) {
     this.userLogged();
     try {
-      this.httpS.obtenerAmigos(1).then((res) => {
+      this.httpS.obtenerAmigos(this.user.id).then((res) => {
         let data = res.data;
         data = JSON.parse(data);
         this.tmp = data;
@@ -50,7 +48,7 @@ export class Tab1amiPage implements OnInit {
 
   public userLogged() {
     let aux = [];
-    this.httpS.obtenerUsuarios().then((res) => {
+    this.httpS.getAllUsers().then((res) => {
       let data = res.data;
       data = JSON.parse(data);
       aux = data;
@@ -77,6 +75,8 @@ export class Tab1amiPage implements OnInit {
             this.items = this.listaAmigos;
           }
         })
+      }).catch((err) => {
+        console.log(err);
       })
     })
   }

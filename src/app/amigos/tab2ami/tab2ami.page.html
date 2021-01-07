@@ -13,14 +13,14 @@
   <div style="background-color: #ffa44f;">
     <ion-searchbar #search debounce="500" (ionChange)="searchItems($event)" type="text"></ion-searchbar>
   </div>
-  <!-- <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list *ngIf="this.listaUsuarios.length > 0">
-    <ion-item *ngFor="let u of this.items; let i=index" (click)="hacerAmigo(u.email)">
+    <ion-item *ngFor="let u of this.items; let i=index">
       <ion-label>
-        <h2>{{u.name}}</h2>
+        <h2>{{u.nombre}}</h2>
       </ion-label>
     </ion-item>
-  </ion-list> -->
+  </ion-list>
 </ion-content>
