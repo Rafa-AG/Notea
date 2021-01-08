@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Nota } from 'src/app/model/nota';
+import { HttpService } from 'src/app/services/http.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { NotasService } from 'src/app/services/notas.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -22,7 +23,8 @@ export class EditNotaPage implements OnInit {
     private modalController: ModalController,
     private alertC: AlertController,
     private toastS: ToastService,
-    private loadingS: LoadingService) {
+    private loadingS: LoadingService,
+    private httpS: HttpService) {
     this.tasks = this.formBuilder.group({
       title: ['', Validators.required],
       description: [''],
@@ -48,20 +50,20 @@ export class EditNotaPage implements OnInit {
   public async sendForm() {
     await this.loadingS.presentLoading();
     let data: Nota = {
+      id: this.nota.id,
       titulo: this.tasks.get('title').value,
       texto: this.tasks.get('description').value,
       favorito: this.tasks.get('favorite').value
     }
-    this.notasS.actualizarNota(this.nota.id, data)
-      .then((respuesta) => {
-        this.loadingS.stopLoading();
-        this.toastS.presentToast('Nota guardada');
-        this.loadingS.stopLoading();
-      })
-      .catch((err) => {
-        this.loadingS.stopLoading();
-        this.toastS.presentToast('Error al guardar la nota');
-      })
+    this.httpS.editarNota(data).then((res) => {
+      this.loadingS.stopLoading();
+      this.toastS.presentToast('Nota guardada');
+      this.modalController.dismiss();
+    }).catch((err) => {
+      console.log(err)
+      this.loadingS.stopLoading();
+      this.toastS.presentToast('Error al guardar la nota');
+    })
   }
 
   /**

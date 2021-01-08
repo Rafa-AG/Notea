@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
+import { HttpService } from 'src/app/services/http.service';
 import { NotasService } from 'src/app/services/notas.service';
 
 @Component({
@@ -10,10 +12,18 @@ import { NotasService } from 'src/app/services/notas.service';
 export class FavoritosPage implements OnInit {
 
   //Nota Array
-  public listaFavoritos=[];
+  public listaFavoritos = [];
 
-  constructor(private notasS:NotasService,
-    private modalController:ModalController) { }
+  private user = {
+    id: 0,
+    nombre: '',
+    email: ''
+  }
+
+  constructor(private notasS: NotasService,
+    private modalController: ModalController,
+    private httpS: HttpService,
+    private authS: AuthService) { }
 
   /**
    * Method to call cargaDatos() at init of page
@@ -26,36 +36,49 @@ export class FavoritosPage implements OnInit {
    * Method to get all note data from firebase and save it on listaFavoritos
    * @param $event 
    */
-  public cargaDatos($event=null){
+  public async cargaDatos($event = null) {
     try {
-      this.notasS.leeNotas()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          let items = [];
-          info.forEach((doc) => {
-            let nota = {
-              id: doc.id,
-              ...doc.data()
-            }
-            items.push(nota);
-          });
-          items.forEach((nota)=>{
-            if(nota.favorito==true){
-              this.listaFavoritos.push(nota);
-            }
-          })
-          if ($event) {
-            $event.target.complete();
+      await this.userLogged();
+      this.httpS.getNotesByUser(this.user.id).then((res) => {
+        let tmp = []
+        let data = res.data;
+        tmp = JSON.parse(data);
+        tmp.forEach((n)=>{
+          if(n.favorito==true){
+            this.listaFavoritos.push(n);
           }
         })
+        if ($event) {
+          $event.target.complete();
+        }
+      })
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async userLogged() {
+    try {
+      await this.httpS.getAllUsers().then((res) => {
+        let tmp = []
+        let data = res.data;
+        data = JSON.parse(data);
+        tmp = data;
+        tmp.forEach((u) => {
+          if (u.email === this.authS.user.email) {
+            this.user = u;
+          }
+        })
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
 
   /**
    * Method to close Modal and come back to Tab1
    */
-  public goBack(){
+  public goBack() {
     this.modalController.dismiss();
   }
 

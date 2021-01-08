@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
 import { Nota } from '../model/nota';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
+import { AuthService } from '../services/auth.service';
 import { HttpService } from '../services/http.service';
 import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
@@ -20,19 +21,27 @@ export class Tab1Page {
   //Aux object
   public items: any;
 
+  private user = {
+    id: 0,
+    nombre: '',
+    email: ''
+  }
+
   constructor(private notasS: NotasService,
     private modalController: ModalController,
     private menu: MenuController,
     private alert: AlertController,
     private actionSheetController: ActionSheetController,
     private loadingS: LoadingService,
-    private httpS:HttpService) { }
+    private httpS: HttpService,
+    private authS: AuthService) { }
 
   /**
    * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
    */
   ionViewDidEnter() {
     this.notasS.cargarColeccion();
+    this.authS.cargaUsuarios();
     this.cargaDatos();
   }
 
@@ -44,34 +53,37 @@ export class Tab1Page {
    * Method to get data from firebase and save it on listaNotas and items
    * @param $event 
    */
-  public cargaDatos($event = null) {
+  public async cargaDatos($event = null) {
     try {
-      this.notasS.leeNotas()
-        .subscribe((info: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          this.listaNotas = [];
-          info.forEach((doc) => {
-            let nota = {
-              id: doc.id,
-              ...doc.data()
-            }
-            this.listaNotas.push(nota);
-            this.items = this.listaNotas;
-          });
-          let tmp = [];
-          this.listaNotas.forEach((n) => {
-            if (n.email == null) {
-              tmp.push(n);
-            }
-          })
-          this.listaNotas = tmp;
-          this.items = this.listaNotas;
-          if ($event) {
-            $event.target.complete();
-          }
-        })
-        
+      await this.userLogged()
+      this.httpS.getNotesByUser(this.user.id).then((res) => {
+        let data = res.data;
+        this.listaNotas = JSON.parse(data);
+        this.items=this.listaNotas
+        if ($event) {
+          $event.target.complete();
+        }
+      })
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async userLogged() {
+    try {
+      await this.httpS.getAllUsers().then((res) => {
+        let tmp = []
+        let data = res.data;
+        data = JSON.parse(data);
+        tmp = data;
+        tmp.forEach((u) => {
+          if (u.email === this.authS.user.email) {
+            this.user = u;
+          }
+        })
+      })
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -80,8 +92,8 @@ export class Tab1Page {
    * @param id Nota key to delete
    */
   public borraNota(id: any) {
-    try{
-      this.notasS.borraNota(id).then(() => {
+    try {
+      this.httpS.eliminarNota(id).then((res)=>{
         let tmp = [];
         this.listaNotas.forEach((nota) => {
           if (nota.id != id) {
@@ -91,7 +103,7 @@ export class Tab1Page {
         this.listaNotas = tmp;
         this.items = this.listaNotas;
       })
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
@@ -172,16 +184,17 @@ export class Tab1Page {
   public async setFavorito(nota: Nota) {
     await this.loadingS.presentLoading();
     let data: Nota = {
+      id:nota.id,
       titulo: nota.titulo,
       texto: nota.texto,
       favorito: nota.favorito
     }
-    this.notasS.actualizarNota(nota.id, data)
-      .then((respuesta) => {
-        this.loadingS.stopLoading();
-      }).catch((err) => {
-        this.loadingS.stopLoading();
-      })
+    this.httpS.editarNota(data).then((res)=>{
+      this.loadingS.stopLoading();
+    }).catch((err)=>{
+      this.loadingS.stopLoading();
+      console.log(err)
+    })
   }
 
   /**

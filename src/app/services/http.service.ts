@@ -10,8 +10,12 @@ export class HttpService {
 
   constructor(private http: HTTP) { }
 
-  obtenerNota(id: number): Promise<any> {
+  getNote(id: number): Promise<any> {
     return this.http.get(`https://ralba-restful.herokuapp.com/notas/${id}`, {}, { 'apikey': 'proyectoIonic' });
+  }
+
+  getNotesByUser(id: number): Promise<any> {
+    return this.http.get(`https://ralba-restful.herokuapp.com/nota/${id}`, {}, { 'apikey': 'proyectoIonic' });
   }
 
   insertarNota(nota: Nota): Promise<any> {
@@ -26,10 +30,11 @@ export class HttpService {
     return this.http.delete(`https://ralba-restful.herokuapp.com/notas/${id}`, {}, { 'apikey': 'proyectoIonic' })
   }
 
-  editarNota(id: number, nota: Nota): Promise<any> {
-    return this.http.put(`https://ralba-restful.herokuapp.com/notas/${id}`, {
+  editarNota(nota: Nota): Promise<any> {
+    return this.http.put(`https://ralba-restful.herokuapp.com/notas/${nota.id}`, {
       titulo: nota.titulo,
-      texto: nota.texto
+      texto: nota.texto,
+      favorito: nota.favorito
     }, { 'apikey': 'proyectoIonic' })
   }
 
