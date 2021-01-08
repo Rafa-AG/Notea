@@ -2,6 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { Amigo } from '../model/amigo';
 import { Usuario } from '../model/usuario';
 import { HttpService } from './http.service';
 
@@ -15,6 +16,12 @@ export class AuthService implements OnInit, CanActivate {
     token: -1,
     name: '',
     avatar: '',
+    email: ''
+  }
+
+  public userLogged = {
+    id: 0,
+    nombre: '',
     email: ''
   }
 
@@ -95,6 +102,11 @@ export class AuthService implements OnInit, CanActivate {
         avatar: '',
         email: ''
       }
+      this.userLogged = {
+        id: 0,
+        nombre: '',
+        email: ''
+      }
       console.log(err);
     }
     await this.storage.setItem('user', this.user)
@@ -118,8 +130,6 @@ export class AuthService implements OnInit, CanActivate {
         let data = res.data;
         data = JSON.parse(data);
         this.users = data;
-      }).catch((err) => {
-        console.log(err)
       })
     } catch (err) {
       console.log(err)

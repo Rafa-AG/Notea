@@ -20,7 +20,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list *ngIf="this.listaAmigos.length > 0">
-    <ion-item *ngFor="let amigo of this.items; let i=index">
+    <ion-item *ngFor="let amigo of this.items; let i=index" (click)="actionSheet(amigo.id)">
       <ion-label>
         <h2>{{amigo.nombre}}</h2>
       </ion-label>

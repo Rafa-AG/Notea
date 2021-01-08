@@ -17,7 +17,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list *ngIf="this.listaUsuarios.length > 0">
-    <ion-item *ngFor="let u of this.items; let i=index">
+    <ion-item *ngFor="let u of this.items; let i=index" (click)="actionSheet(u.id)">
       <ion-label>
         <h2>{{u.nombre}}</h2>
       </ion-label>

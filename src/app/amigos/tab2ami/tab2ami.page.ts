@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
+import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { NotasService } from 'src/app/services/notas.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-tab2ami',
@@ -15,31 +17,28 @@ export class Tab2amiPage implements OnInit {
   private auxA = [];
   private tmp = [];
   private items = [];
-  private user = {
-    id: 0,
-    email: '',
-    nombre: ''
-  };
 
   constructor(private authS: AuthService,
-    private httpS: HttpService) { }
+    private httpS: HttpService,
+    private amigoS: AmigosService,
+    private loadingS: LoadingService,
+    private actionSheetController: ActionSheetController) { }
 
-  ngOnInit() {
-    this.userLogged();
+  async ngOnInit() {
     this.authS.cargaUsuarios();
-    this.cargaDatos();
+    await this.cargaDatos();
   }
 
-  public cargaDatos($event = null) {
+  public async cargaDatos($event = null) {
     try {
-      this.getFriends();
+      await this.getFriends()
       this.httpS.getAllUsers().then((res) => {
         let data = res.data;
         this.tmp = JSON.parse(data);
         this.tmp.forEach((u) => {
-          if (this.isFriend(u.email) === false && u.email !== this.user.email && this.isInside(u.email) === false) {
-            this.listaUsuarios.push(u);
-            this.items = this.listaUsuarios;
+          if (this.isFriend(u.email) == false && u.email !== this.amigoS.userLogged.email && this.isInside(u.email) === false) {
+            this.listaUsuarios.push(u)
+            this.items = this.listaUsuarios
           }
         })
         if ($event) {
@@ -52,16 +51,14 @@ export class Tab2amiPage implements OnInit {
   }
 
   public async getFriends() {
-    this.userLogged();
     try {
-      let aux = [];
-      await this.httpS.obtenerAmigos(this.user.id).then((res) => {
+      await this.amigoS.cargaDatos().then((res) => {
         let data = res.data;
-        this.auxA = JSON.parse(data);
-        console.log(this.auxA)
+        this.auxA = JSON.parse(data)
         this.auxA.forEach((u) => {
-          this.httpS.getUserByID(u.amigo).then((res) => {
-            let d = res.data;
+          this.httpS.getUserByID(u.amigo).then((resu) => {
+            let aux = []
+            let d = resu.data;
             aux = JSON.parse(d);
             aux.forEach((a) => {
               if (this.isFriend(a.email) === false) {
@@ -96,20 +93,45 @@ export class Tab2amiPage implements OnInit {
     return result;
   }
 
-  public userLogged() {
-    let aux = [];
-    this.httpS.getAllUsers().then((res) => {
-      let data = res.data;
-      data = JSON.parse(data);
-      aux = data;
-      aux.forEach((u) => {
-        if (u.email === this.authS.user.email) {
-          this.user = u;
+  async addFriend(friend: number) {
+    await this.loadingS.presentLoading();
+    this.httpS.añadirAmigo(this.amigoS.userLogged.id, friend).then((res) => {
+      console.log(res)
+      let tmp = [];
+      this.listaUsuarios.forEach((u)=>{
+        if(u.id!=friend){
+          tmp.push(u);
         }
       })
-    }).catch((err) => {
+      this.listaUsuarios=tmp;
+      this.items=this.listaUsuarios;
+      this.loadingS.stopLoading();
+    }).catch((err)=>{
       console.log(err);
+      this.loadingS.stopLoading();
     })
+  }
+
+  async actionSheet(friend: number) {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Opciones',
+      cssClass: 'my-custom-class',
+      buttons: [{
+        text: 'Añadir Amigo',
+        icon: 'person-add-outline',
+        handler: () => {
+          this.addFriend(friend);
+        }
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+        }
+      }]
+    });
+    await actionSheet.present();
   }
 
   public searchItems(ev: any) {
@@ -117,7 +139,7 @@ export class Tab2amiPage implements OnInit {
     this.items = this.listaUsuarios;
     if (val && val.trim() !== '') {
       this.items = this.items.filter((item) => {
-        return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        return (item.nombre.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
   }

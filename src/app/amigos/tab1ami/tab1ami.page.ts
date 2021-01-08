@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonSearchbar } from '@ionic/angular';
+import { ActionSheetController, IonSearchbar } from '@ionic/angular';
+import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-tab1ami',
@@ -13,16 +15,14 @@ export class Tab1amiPage implements OnInit {
   @ViewChild('search', { static: false }) search: IonSearchbar;
 
   private listaAmigos = [];
-  private tmp = [];
   private items = [];
-  private user = {
-    id: 0,
-    email: '',
-    nombre: ''
-  };
+  private tmp = [];
 
   constructor(private httpS: HttpService,
-    private authS: AuthService) { }
+    private authS: AuthService,
+    private amigoS: AmigosService,
+    private loadingS: LoadingService,
+    private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
     this.authS.cargaUsuarios();
@@ -30,55 +30,30 @@ export class Tab1amiPage implements OnInit {
   }
 
   public cargaDatos($event = null) {
-    this.userLogged();
     try {
-      this.httpS.obtenerAmigos(this.user.id).then((res) => {
+      this.amigoS.cargaDatos().then((res) => {
         let data = res.data;
-        data = JSON.parse(data);
-        this.tmp = data;
-        this.getFriends();
+        this.tmp = JSON.parse(data)
+        this.tmp.forEach((u) => {
+          this.httpS.getUserByID(u.amigo).then((resu) => {
+            let aux = []
+            let d = resu.data;
+            aux = JSON.parse(d);
+            aux.forEach((a) => {
+              if (this.isFriend(a.email) === false) {
+                this.listaAmigos.push(a);
+                this.items = this.listaAmigos
+              }
+            })
+          })
+        })
         if ($event) {
           $event.target.complete();
         }
       })
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  }
-
-  public userLogged() {
-    let aux = [];
-    this.httpS.getAllUsers().then((res) => {
-      let data = res.data;
-      data = JSON.parse(data);
-      aux = data;
-      aux.forEach((u) => {
-        if (u.email === this.authS.user.email) {
-          this.user = u;
-        }
-      })
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
-  public getFriends() {
-    let aux = [];
-    this.tmp.forEach((u) => {
-      this.httpS.getUserByID(u.amigo).then((res) => {
-        let data = res.data;
-        data = JSON.parse(data);
-        aux = data;
-        aux.forEach((a) => {
-          if (this.isFriend(a.email) === false) {
-            this.listaAmigos.push(a);
-            this.items = this.listaAmigos;
-          }
-        })
-      }).catch((err) => {
-        console.log(err);
-      })
-    })
   }
 
   public isFriend(email: string): boolean {
@@ -89,6 +64,46 @@ export class Tab1amiPage implements OnInit {
       }
     })
     return result;
+  }
+
+  async deleteFriend(friend: number) {
+    await this.loadingS.presentLoading();
+    this.httpS.eliminarAmigo(this.amigoS.userLogged.id, friend).then((res) => {
+      let tmp = [];
+      this.listaAmigos.forEach((a)=>{
+        if(a.id!=friend){
+          tmp.push(a);
+        }
+      })
+      this.listaAmigos=tmp
+      this.items=this.listaAmigos
+      this.loadingS.stopLoading();
+    }).catch((err) => {
+      console.log(err)
+      this.loadingS.stopLoading();
+    })
+  }
+
+  async actionSheet(friend: number) {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Opciones',
+      cssClass: 'my-custom-class',
+      buttons: [{
+        text: 'Eliminar Amigo',
+        icon: 'person-remove-outline',
+        handler: () => {
+          this.deleteFriend(friend);
+        }
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+        }
+      }]
+    });
+    await actionSheet.present();
   }
 
   public searchItems(ev: any) {

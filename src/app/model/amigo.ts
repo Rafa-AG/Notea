@@ -3,6 +3,6 @@
  */
 export interface Amigo{
     id:number,
-    name:string,
+    nombre:string,
     email:string,
 }

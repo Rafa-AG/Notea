@@ -37,11 +37,9 @@ export class HttpService {
     return this.http.get(`https://ralba-restful.herokuapp.com/usuarios/${id}`, {}, { 'apikey': 'proyectoIonic' });
   }
 
-  /*getUserByEmail(email: string): Promise<any> {
-    return this.http.get('https://ralba-restful.herokuapp.com/usuarios', {
-      email: email
-    }, { 'apikey': 'proyectoIonic' })
-  }*/
+  getUserByEmail(email: string): Promise<any> {
+    return this.http.get(`https://ralba-restful.herokuapp.com/usuarios/${email}`, {}, { 'apikey': 'proyectoIonic' })
+  }
 
   getAllUsers(): Promise<any> {
     return this.http.get('https://ralba-restful.herokuapp.com/usuarios', {}, { 'apikey': 'proyectoIonic' })

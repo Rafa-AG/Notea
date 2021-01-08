@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
 import { Nota } from '../model/nota';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
+import { HttpService } from '../services/http.service';
 import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
 
@@ -24,7 +25,8 @@ export class Tab1Page {
     private menu: MenuController,
     private alert: AlertController,
     private actionSheetController: ActionSheetController,
-    private loadingS: LoadingService) { }
+    private loadingS: LoadingService,
+    private httpS:HttpService) { }
 
   /**
    * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
@@ -67,6 +69,7 @@ export class Tab1Page {
             $event.target.complete();
           }
         })
+        
     } catch (err) {
       console.log(err);
     }
@@ -77,19 +80,20 @@ export class Tab1Page {
    * @param id Nota key to delete
    */
   public borraNota(id: any) {
-    this.notasS.borraNota(id).then(() => {
-      let tmp = [];
-      this.listaNotas.forEach((nota) => {
-        if (nota.id != id) {
-          tmp.push(nota);
-        }
+    try{
+      this.notasS.borraNota(id).then(() => {
+        let tmp = [];
+        this.listaNotas.forEach((nota) => {
+          if (nota.id != id) {
+            tmp.push(nota);
+          }
+        })
+        this.listaNotas = tmp;
+        this.items = this.listaNotas;
       })
-      this.listaNotas = tmp;
-      this.items = this.listaNotas;
-    })
-      .catch(err => {
-
-      })
+    }catch(err){
+      console.log(err)
+    }
   }
 
   /**
@@ -144,7 +148,6 @@ export class Tab1Page {
         }
       ]
     });
-
     await alert.present();
   }
 
