@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonSearchbar } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonSearchbar } from '@ionic/angular';
 import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -28,7 +28,8 @@ export class Tab1amiPage implements OnInit {
     private authS: AuthService,
     private amigoS: AmigosService,
     private loadingS: LoadingService,
-    private actionSheetController: ActionSheetController) { }
+    private actionSheetController: ActionSheetController,
+    private alert: AlertController) { }
 
   ngOnInit() {
     this.authS.cargaUsuarios();
@@ -129,7 +130,7 @@ export class Tab1amiPage implements OnInit {
         text: 'Eliminar Amigo',
         icon: 'person-remove-outline',
         handler: () => {
-          this.deleteFriends(friend);
+          this.presentAlertConfirm(friend);
         }
       },
       {
@@ -141,6 +142,30 @@ export class Tab1amiPage implements OnInit {
       }]
     });
     await actionSheet.present();
+  }
+
+  public async presentAlertConfirm(friend: any) {
+    const alert = await this.alert.create({
+      cssClass: 'alertDelete',
+      header: 'Eliminar Amigo',
+      message: '¿Está seguro de que quiere eliminar este usuario de su lista de amigos?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'cancel',
+          handler: () => {
+          }
+        }, {
+          text: 'Eliminar',
+          cssClass: 'delete',
+          handler: () => {
+            this.deleteFriends(friend);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async userLogged() {
