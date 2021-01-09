@@ -94,22 +94,24 @@ export class Tab2amiPage implements OnInit {
   }
 
   async addFriend(friend: number) {
-    await this.loadingS.presentLoading();
-    this.httpS.añadirAmigo(this.amigoS.userLogged.id, friend).then((res) => {
-      console.log(res)
-      let tmp = [];
-      this.listaUsuarios.forEach((u)=>{
-        if(u.id!=friend){
-          tmp.push(u);
-        }
+    try {
+      await this.loadingS.presentLoading();
+      this.httpS.añadirAmigo(this.amigoS.userLogged.id, friend).then((res) => {
+        console.log(res)
+        let tmp = [];
+        this.listaUsuarios.forEach((u) => {
+          if (u.id != friend) {
+            tmp.push(u);
+          }
+        })
+        this.listaUsuarios = tmp;
+        this.items = this.listaUsuarios;
+        this.loadingS.stopLoading();
       })
-      this.listaUsuarios=tmp;
-      this.items=this.listaUsuarios;
-      this.loadingS.stopLoading();
-    }).catch((err)=>{
+    } catch (err) {
       console.log(err);
       this.loadingS.stopLoading();
-    })
+    }
   }
 
   async actionSheet(friend: number) {

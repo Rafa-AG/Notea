@@ -71,6 +71,10 @@ export class HttpService {
     return this.http.get(`https://ralba-restful.herokuapp.com/amigos/${user}`, {}, { 'apikey': 'proyectoIonic' })
   }
 
+  obtenerAmigo(u1:number, u2:number):Promise<any>{
+    return this.http.get(`https://ralba-restful.herokuapp.com/amigos/${u1}/${u2}`, {}, { 'apikey': 'proyectoIonic' });
+  }
+
   añadirAmigo(u1: number, u2: number): Promise<any> {
     return this.http.post('https://ralba-restful.herokuapp.com/amigos', {
       usuario: u1,
@@ -78,8 +82,9 @@ export class HttpService {
     }, { 'apikey': 'proyectoIonic' });
   }
 
-  eliminarAmigo(u1: number, u2: number): Promise<any> {
-    return this.http.delete(`https://ralba-restful.herokuapp.com/amigos/${u1}/${u2}`, {}, { 'apikey': 'proyectoIonic' })
+  eliminarAmigo(id: number): Promise<any> {
+    return this.http.delete(`https://ralba-restful.herokuapp.com/amigos/${id}`, {
+    }, { 'apikey': 'proyectoIonic' })
   }
 
   editarAmigo(u1: number, u2: number): Promise<any> {
