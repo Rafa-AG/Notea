@@ -19,9 +19,15 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { AuthService } from './services/auth.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Flashlight } from '@ionic-native/flashlight/ngx';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { HTTP } from '@ionic-native/http/ngx'
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [AppComponent, EditNotaPage],
@@ -31,6 +37,13 @@ import { HTTP } from '@ionic-native/http/ngx'
     HttpClientModule,
     ReactiveFormsModule,
     IonicModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    }),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AppRoutingModule
@@ -49,4 +62,4 @@ import { HTTP } from '@ionic-native/http/ngx'
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

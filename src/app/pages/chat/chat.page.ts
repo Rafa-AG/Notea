@@ -5,8 +5,7 @@ import { Amigo } from 'src/app/model/amigo';
 import { Chat } from 'src/app/model/chat';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ServiciosService } from 'src/app/services/servicios.service';
 
 @Component({
   selector: 'app-chat',
@@ -32,8 +31,7 @@ export class ChatPage implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private httpS: HttpService,
     private authS: AuthService,
-    private loadingS: LoadingService,
-    private toastS: ToastService,
+    private servicios:ServiciosService,
     private modalController: ModalController,
     private alert:AlertController) {
     this.tasks = this.formBuilder.group({
@@ -92,7 +90,7 @@ export class ChatPage implements OnInit {
 
   public async sendForm() {
     try {
-      await this.loadingS.presentLoading();
+      await this.servicios.presentLoading();
       console.log(this.listaChat)
       let data: Chat = {
         id: 0,
@@ -105,13 +103,13 @@ export class ChatPage implements OnInit {
           titulo: '',
           texto: ''
         })
-        this.loadingS.stopLoading();
-        this.toastS.presentToast('Nota guardada');
+        this.servicios.stopLoading();
+        this.servicios.presentToast('Nota guardada');
         this.modalController.dismiss();
       })
     } catch (err) {
-      this.loadingS.stopLoading();
-      this.toastS.presentToast('Error al guardar la nota');
+      this.servicios.stopLoading();
+      this.servicios.presentToast('Error al guardar la nota');
     }
   }
 

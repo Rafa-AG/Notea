@@ -3,7 +3,7 @@ import { ActionSheetController, AlertController, IonSearchbar } from '@ionic/ang
 import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { ServiciosService } from 'src/app/services/servicios.service';
 
 @Component({
   selector: 'app-tab1ami',
@@ -27,9 +27,9 @@ export class Tab1amiPage implements OnInit {
   constructor(private httpS: HttpService,
     private authS: AuthService,
     private amigoS: AmigosService,
-    private loadingS: LoadingService,
     private actionSheetController: ActionSheetController,
-    private alert: AlertController) { }
+    private alert: AlertController,
+    private servicios:ServiciosService) { }
 
   ngOnInit() {
     this.authS.cargaUsuarios();
@@ -86,7 +86,7 @@ export class Tab1amiPage implements OnInit {
 
   public async deleteFriends(friend: number) {
     try {
-      await this.loadingS.presentLoading();
+      await this.servicios.presentLoading();
       this.httpS.obtenerAmigos(this.user.id).then((res) => {
         let aux = []
         let data = res.data;
@@ -114,11 +114,11 @@ export class Tab1amiPage implements OnInit {
             }
           })
         })
-        this.loadingS.stopLoading();
+        this.servicios.stopLoading();
       })
     } catch (err) {
       console.log(err);
-      this.loadingS.stopLoading();
+      this.servicios.stopLoading();
     }
   }
 
@@ -195,60 +195,5 @@ export class Tab1amiPage implements OnInit {
       })
     }
   }
-
-  /*public prueba() {
-    this.http.get('https://ralba-restful.herokuapp.com/clientes', {}, { 'apikey': 'proyectoIonic' }).then((res) => {
-      console.log(res);
-      let data = res.data;
-      data = JSON.parse(data);
-      console.log(data)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }*/
-
-  /*public obtener() {
-    this.httpS.obtenerNota(1).then((res) => {
-      let data = res.data;
-      this.prueba = JSON.parse(data);
-      console.log(this.prueba)
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
-
-  public insertar() {
-    this.httpS.insertarNota('prueba', 'esto es otra prueba loco', 1).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
-  public eliminar() {
-    this.httpS.eliminarNota(4).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-
-  public editar(){
-    this.httpS.editarNota(1, 'otra prueba', 'es una prueba para editar', 1).then((res)=>{
-      console.log(res);
-    }).catch((err)=>{
-      console.log(err)
-    })
-  }
-  
-  public obtener(){
-    this.httpS.getUserByEmail('joeplays69@gmail.com').then((res) => {
-      let data = res.data;
-      data = JSON.parse(data);
-      console.log(data);
-    }).catch((err)=>{
-      console.log(err)
-    })
-  }*/
 
 }

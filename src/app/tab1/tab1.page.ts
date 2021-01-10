@@ -4,8 +4,8 @@ import { Nota } from '../model/nota';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
 import { AuthService } from '../services/auth.service';
 import { HttpService } from '../services/http.service';
-import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
+import { ServiciosService } from '../services/servicios.service';
 
 @Component({
   selector: 'app-tab1',
@@ -27,12 +27,11 @@ export class Tab1Page {
     email: ''
   }
 
-  constructor(private notasS: NotasService,
-    private modalController: ModalController,
+  constructor(private modalController: ModalController,
     private menu: MenuController,
     private alert: AlertController,
     private actionSheetController: ActionSheetController,
-    private loadingS: LoadingService,
+    private servicios:ServiciosService,
     private httpS: HttpService,
     private authS: AuthService) { }
 
@@ -181,7 +180,7 @@ export class Tab1Page {
    * @param nota Note setted favorite
    */
   public async setFavorito(nota: Nota) {
-    await this.loadingS.presentLoading();
+    await this.servicios.presentLoading();
     let data: Nota = {
       id: nota.id,
       titulo: nota.titulo,
@@ -189,9 +188,9 @@ export class Tab1Page {
       favorito: nota.favorito
     }
     this.httpS.editarNota(data).then((res) => {
-      this.loadingS.stopLoading();
+      this.servicios.stopLoading();
     }).catch((err) => {
-      this.loadingS.stopLoading();
+      this.servicios.stopLoading();
       console.log(err)
     })
   }

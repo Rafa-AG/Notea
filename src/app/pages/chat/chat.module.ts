@@ -8,6 +8,7 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 
 import { ChatPage } from './chat.page';
 import { ExploreContainerComponentModule } from 'src/app/explore-container/explore-container.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { ExploreContainerComponentModule } from 'src/app/explore-container/explo
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+    TranslateModule,
     ExploreContainerComponentModule,
     ChatPageRoutingModule
   ],

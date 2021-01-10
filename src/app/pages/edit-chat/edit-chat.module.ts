@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { EditChatPageRoutingModule } from './edit-chat-routing.module';
 
 import { EditChatPage } from './edit-chat.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { EditChatPage } from './edit-chat.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    TranslateModule,
     EditChatPageRoutingModule
   ],
   declarations: [EditChatPage]

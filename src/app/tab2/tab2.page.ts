@@ -3,9 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Nota } from '../model/nota';
 import { AuthService } from '../services/auth.service';
 import { HttpService } from '../services/http.service';
-import { LoadingService } from '../services/loading.service';
 import { NotasService } from '../services/notas.service';
-import { ToastService } from '../services/toast.service';
+import { ServiciosService } from '../services/servicios.service';
 
 @Component({
   selector: 'app-tab2',
@@ -24,10 +23,9 @@ export class Tab2Page {
 
   constructor(private formBuilder: FormBuilder,
     private notasS: NotasService,
-    private loadingS: LoadingService,
-    private toastS: ToastService,
     private httpS: HttpService,
-    private authS: AuthService) {
+    private authS: AuthService,
+    private servicios:ServiciosService) {
     this.tasks = this.formBuilder.group({
       title: ['', Validators.required],
       description: ['']
@@ -44,7 +42,7 @@ export class Tab2Page {
    */
   public async sendForm() {
     try {
-      await this.loadingS.presentLoading();
+      await this.servicios.presentLoading();
       let data: Nota = {
         titulo: this.tasks.get('title').value,
         texto: this.tasks.get('description').value,
@@ -58,12 +56,12 @@ export class Tab2Page {
           this.httpS.insertarNota(data).then((res)=>{
             console.log(res)
           })
-          this.loadingS.stopLoading();
-          this.toastS.presentToast('Nota guardada');
+          this.servicios.stopLoading();
+          this.servicios.presentToast('Nota guardada');
         })
     } catch (err) {
-      this.loadingS.stopLoading();
-      this.toastS.presentToast('Error al guardar la nota');
+      this.servicios.stopLoading();
+      this.servicios.presentToast('Error al guardar la nota');
     }
   }
 

@@ -4,7 +4,7 @@
       <ion-menu-button autoHide="false" menu="first" color="light"></ion-menu-button>
     </ion-buttons>
     <ion-title color="light">
-      Añadir Tarea
+      {{'AÑADIR TAREA' | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -19,7 +19,7 @@
       </ion-textarea>
     </ion-item>
     <div style="text-align: right;">
-      <ion-button shape="round" style="--color:#ffa44f; --border-color:#ffa44f;" fill="outline" type="submit" [disabled]="!tasks.valid">Añadir
+      <ion-button shape="round" style="--color:#ffa44f; --border-color:#ffa44f;" fill="outline" type="submit" [disabled]="!tasks.valid">{{'AÑADIR' | translate}}
       </ion-button>
     </div>
   </form>

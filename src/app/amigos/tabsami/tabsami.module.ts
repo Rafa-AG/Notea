@@ -7,12 +7,14 @@ import { IonicModule } from '@ionic/angular';
 import { TabsamiPageRoutingModule } from './tabsami-routing.module';
 
 import { TabsamiPage } from './tabsami.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    TranslateModule,
     TabsamiPageRoutingModule
   ],
   declarations: [TabsamiPage]

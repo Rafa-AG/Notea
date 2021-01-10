@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Chat } from 'src/app/model/chat';
 import { HttpService } from 'src/app/services/http.service';
-import { LoadingService } from 'src/app/services/loading.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ServiciosService } from 'src/app/services/servicios.service';
 
 @Component({
   selector: 'app-edit-chat',
@@ -20,9 +19,8 @@ export class EditChatPage implements OnInit {
   constructor(private modalController: ModalController,
     private alert: AlertController,
     private formBuilder: FormBuilder,
-    private loadingS: LoadingService,
     private httpS:HttpService,
-    private toastS:ToastService) {
+    private servicios:ServiciosService) {
     this.tasks = this.formBuilder.group({
       titulo: ['', Validators.required],
       texto: ['']
@@ -38,7 +36,7 @@ export class EditChatPage implements OnInit {
   }
 
   public async sendForm() {
-    await this.loadingS.presentLoading();
+    await this.servicios.presentLoading();
     let data: Chat = {
       id: this.chat.id,
       titulo: this.tasks.get('titulo').value,
@@ -46,13 +44,13 @@ export class EditChatPage implements OnInit {
       usuarios: this.chat.usuarios
     }
     this.httpS.editChat(data).then((res) => {
-      this.loadingS.stopLoading();
-      this.toastS.presentToast('Nota guardada');
+      this.servicios.stopLoading();
+      this.servicios.presentToast('Nota guardada');
       this.modalController.dismiss();
     }).catch((err) => {
       console.log(err)
-      this.loadingS.stopLoading();
-      this.toastS.presentToast('Error al guardar la nota');
+      this.servicios.stopLoading();
+      this.servicios.presentToast('Error al guardar la nota');
     })
   }
 

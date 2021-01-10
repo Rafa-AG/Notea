@@ -3,7 +3,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { LoadingService } from 'src/app/services/loading.service';
+import { ServiciosService } from 'src/app/services/servicios.service';
 
 @Component({
   selector: 'app-tab2ami',
@@ -21,7 +21,7 @@ export class Tab2amiPage implements OnInit {
   constructor(private authS: AuthService,
     private httpS: HttpService,
     private amigoS: AmigosService,
-    private loadingS: LoadingService,
+    private servicios:ServiciosService,
     private actionSheetController: ActionSheetController) { }
 
   async ngOnInit() {
@@ -95,7 +95,7 @@ export class Tab2amiPage implements OnInit {
 
   async addFriend(friend: number) {
     try {
-      await this.loadingS.presentLoading();
+      await this.servicios.presentLoading();
       this.httpS.añadirAmigo(this.amigoS.userLogged.id, friend).then((res) => {
         console.log(res)
         let tmp = [];
@@ -106,11 +106,11 @@ export class Tab2amiPage implements OnInit {
         })
         this.listaUsuarios = tmp;
         this.items = this.listaUsuarios;
-        this.loadingS.stopLoading();
+        this.servicios.stopLoading();
       })
     } catch (err) {
       console.log(err);
-      this.loadingS.stopLoading();
+      this.servicios.stopLoading();
     }
   }
 

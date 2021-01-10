@@ -8,6 +8,7 @@ import { FriendsPageRoutingModule } from './friends-routing.module';
 
 import { FriendsPage } from './friends.page';
 import { ExploreContainerComponentModule } from 'src/app/explore-container/explore-container.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { ExploreContainerComponentModule } from 'src/app/explore-container/explo
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+    TranslateModule,
     ExploreContainerComponentModule,
     FriendsPageRoutingModule
   ],
