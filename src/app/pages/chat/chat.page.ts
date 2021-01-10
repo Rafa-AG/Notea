@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Amigo } from 'src/app/model/amigo';
 import { Chat } from 'src/app/model/chat';
 import { AuthService } from 'src/app/services/auth.service';
@@ -31,9 +32,10 @@ export class ChatPage implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private httpS: HttpService,
     private authS: AuthService,
-    private servicios:ServiciosService,
+    private servicios: ServiciosService,
     private modalController: ModalController,
-    private alert:AlertController) {
+    private alert: AlertController,
+    private translate: TranslateService) {
     this.tasks = this.formBuilder.group({
       titulo: ['', Validators.required],
       texto: ['']
@@ -64,32 +66,52 @@ export class ChatPage implements OnInit {
   }
 
   public async presentAlertConfirm() {
-    const alert = await this.alert.create({
-      cssClass: 'alertDelete',
-      header: 'Cancelar',
-      message: '¿Está seguro de que quiere salir sin guardar la nota?',
-      buttons: [
-        {
-          text: 'No',
-          role: 'cancel',
-          cssClass: 'cancel',
-          handler: () => {
+    try {
+      let header, message, no, si;
+      this.translate.get('CANCELAR').subscribe((res: string) => {
+        header = res
+      })
+      this.translate.get('CONFIRMACION CANCELAR GUARDADO').subscribe((res: string) => {
+        message = res
+      })
+      this.translate.get('NO').subscribe((res: string) => {
+        no = res
+      })
+      this.translate.get('SI').subscribe((res: string) => {
+        si = res
+      })
+      const alert = await this.alert.create({
+        cssClass: 'alertDelete',
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: no,
+            role: 'cancel',
+            cssClass: 'cancel',
+            handler: () => {
+            }
+          }, {
+            text: si,
+            cssClass: 'delete',
+            handler: () => {
+              this.goBack();
+            }
           }
-        }, {
-          text: 'Sí',
-          cssClass: 'delete',
-          handler: () => {
-            this.goBack();
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+        ]
+      });
+      await alert.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   public async sendForm() {
     try {
+      let guardada;
+      this.translate.get('NOTA GUARDADA').subscribe((res: string) => {
+        guardada = res
+      })
       await this.servicios.presentLoading();
       console.log(this.listaChat)
       let data: Chat = {
@@ -104,12 +126,16 @@ export class ChatPage implements OnInit {
           texto: ''
         })
         this.servicios.stopLoading();
-        this.servicios.presentToast('Nota guardada');
+        this.servicios.presentToast(guardada);
         this.modalController.dismiss();
       })
     } catch (err) {
+      let error;
+      this.translate.get('ERROR GUARDADO').subscribe((res: string) => {
+        error = res
+      })
       this.servicios.stopLoading();
-      this.servicios.presentToast('Error al guardar la nota');
+      this.servicios.presentToast(error);
     }
   }
 

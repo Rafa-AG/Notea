@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -21,8 +22,9 @@ export class Tab2amiPage implements OnInit {
   constructor(private authS: AuthService,
     private httpS: HttpService,
     private amigoS: AmigosService,
-    private servicios:ServiciosService,
-    private actionSheetController: ActionSheetController) { }
+    private servicios: ServiciosService,
+    private actionSheetController: ActionSheetController,
+    private translate: TranslateService) { }
 
   async ngOnInit() {
     this.authS.cargaUsuarios();
@@ -115,25 +117,39 @@ export class Tab2amiPage implements OnInit {
   }
 
   async actionSheet(friend: number) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Opciones',
-      cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Añadir Amigo',
-        icon: 'person-add-outline',
-        handler: () => {
-          this.addFriend(friend);
-        }
-      },
-      {
-        text: 'Cancelar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-        }
-      }]
-    });
-    await actionSheet.present();
+    try {
+      let header, add, cancel
+      this.translate.get('OPCIONES').subscribe((res: string) => {
+        header = res
+      })
+      this.translate.get('AÑADIR AMIGO').subscribe((res: string) => {
+        add = res
+      })
+      this.translate.get('CANCELAR').subscribe((res: string) => {
+        cancel = res
+      })
+      const actionSheet = await this.actionSheetController.create({
+        header: header,
+        cssClass: 'my-custom-class',
+        buttons: [{
+          text: add,
+          icon: 'person-add-outline',
+          handler: () => {
+            this.addFriend(friend);
+          }
+        },
+        {
+          text: cancel,
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+          }
+        }]
+      });
+      await actionSheet.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   public searchItems(ev: any) {

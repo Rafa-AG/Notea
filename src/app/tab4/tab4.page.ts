@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSearchbar, ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Chat } from '../model/chat';
 import { EditChatPage } from '../pages/edit-chat/edit-chat.page';
 import { FriendsPage } from '../pages/friends/friends.page';
@@ -28,7 +29,8 @@ export class Tab4Page implements OnInit {
   constructor(private httpS: HttpService,
     private authS: AuthService,
     private modalController: ModalController,
-    private alert: AlertController) { }
+    private alert: AlertController,
+    private translateS:TranslateService) { }
 
   ionViewDidEnter() {
     this.authS.cargaUsuarios();
@@ -104,27 +106,44 @@ export class Tab4Page implements OnInit {
   }
 
   public async presentAlertConfirm(id: any) {
-    const alert = await this.alert.create({
-      cssClass: 'alertDelete',
-      header: 'Borrado',
-      message: '¿Está seguro de que quiere eliminar la nota compartida?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'cancel',
-          handler: () => {
+    try{
+      let header, message, cancel, del;
+      this.translateS.get('BORRADO').subscribe((res:string)=>{
+        header=res
+      })
+      this.translateS.get('CONFIRMACION BORRADO NOTA COMPARTIDA').subscribe((res:string)=>{
+        message=res
+      })
+      this.translateS.get('CANCELAR').subscribe((res:string)=>{
+        cancel=res
+      })
+      this.translateS.get('ELIMINAR').subscribe((res:string)=>{
+        del=res
+      })
+      const alert = await this.alert.create({
+        cssClass: 'alertDelete',
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: cancel,
+            role: 'cancel',
+            cssClass: 'cancel',
+            handler: () => {
+            }
+          }, {
+            text: del,
+            cssClass: 'delete',
+            handler: () => {
+              this.deleteChat(id);
+            }
           }
-        }, {
-          text: 'Eliminar',
-          cssClass: 'delete',
-          handler: () => {
-            this.deleteChat(id);
-          }
-        }
-      ]
-    });
-    await alert.present();
+        ]
+      });
+      await alert.present();
+    }catch(err){
+      console.log(err)
+    }
   }
 
   async userLogged() {

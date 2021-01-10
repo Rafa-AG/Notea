@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { AmigosService } from 'src/app/services/amigos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -29,7 +30,8 @@ export class Tab1amiPage implements OnInit {
     private amigoS: AmigosService,
     private actionSheetController: ActionSheetController,
     private alert: AlertController,
-    private servicios:ServiciosService) { }
+    private servicios: ServiciosService,
+    private translate: TranslateService) { }
 
   ngOnInit() {
     this.authS.cargaUsuarios();
@@ -123,49 +125,80 @@ export class Tab1amiPage implements OnInit {
   }
 
   async actionSheet(friend: number) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Opciones',
-      cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Eliminar Amigo',
-        icon: 'person-remove-outline',
-        handler: () => {
-          this.presentAlertConfirm(friend);
-        }
-      },
-      {
-        text: 'Cancelar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-        }
-      }]
-    });
-    await actionSheet.present();
+    try {
+      let header, del, cancel;
+      this.translate.get('OPCIONES').subscribe((res: string) => {
+        header = res
+      })
+      this.translate.get('ELIMINAR AMIGO').subscribe((res: string) => {
+        del = res
+      })
+      this.translate.get('CANCELAR').subscribe((res: string) => {
+        cancel = res
+      })
+      const actionSheet = await this.actionSheetController.create({
+        header: header,
+        cssClass: 'my-custom-class',
+        buttons: [{
+          text: del,
+          icon: 'person-remove-outline',
+          handler: () => {
+            this.presentAlertConfirm(friend);
+          }
+        },
+        {
+          text: cancel,
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+          }
+        }]
+      });
+      await actionSheet.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   public async presentAlertConfirm(friend: any) {
-    const alert = await this.alert.create({
-      cssClass: 'alertDelete',
-      header: 'Eliminar Amigo',
-      message: '¿Está seguro de que quiere eliminar este usuario de su lista de amigos?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'cancel',
-          handler: () => {
+    try {
+      let header, message, del, cancel;
+      this.translate.get('ELIMINAR AMIGO').subscribe((res: string) => {
+        header = res
+      })
+      this.translate.get('CONFIRMACION ELIMINAR AMIGO').subscribe((res: string) => {
+        message = res
+      })
+      this.translate.get('ELIMINAR').subscribe((res: string) => {
+        del = res
+      })
+      this.translate.get('CANCELAR').subscribe((res: string) => {
+        cancel = res
+      })
+      const alert = await this.alert.create({
+        cssClass: 'alertDelete',
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: cancel,
+            role: 'cancel',
+            cssClass: 'cancel',
+            handler: () => {
+            }
+          }, {
+            text: del,
+            cssClass: 'delete',
+            handler: () => {
+              this.deleteFriends(friend);
+            }
           }
-        }, {
-          text: 'Eliminar',
-          cssClass: 'delete',
-          handler: () => {
-            this.deleteFriends(friend);
-          }
-        }
-      ]
-    });
-    await alert.present();
+        ]
+      });
+      await alert.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   async userLogged() {

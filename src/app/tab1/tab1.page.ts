@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActionSheetController, AlertController, IonSearchbar, MenuController, ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Nota } from '../model/nota';
 import { EditNotaPage } from '../pages/edit-nota/edit-nota.page';
 import { AuthService } from '../services/auth.service';
 import { HttpService } from '../services/http.service';
-import { NotasService } from '../services/notas.service';
 import { ServiciosService } from '../services/servicios.service';
 
 @Component({
@@ -31,9 +31,10 @@ export class Tab1Page {
     private menu: MenuController,
     private alert: AlertController,
     private actionSheetController: ActionSheetController,
-    private servicios:ServiciosService,
+    private servicios: ServiciosService,
     private httpS: HttpService,
-    private authS: AuthService) { }
+    private authS: AuthService,
+    private translateS: TranslateService) { }
 
   /**
    * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
@@ -138,27 +139,44 @@ export class Tab1Page {
    * @param id 
    */
   public async presentAlertConfirm(id: any) {
-    const alert = await this.alert.create({
-      cssClass: 'alertDelete',
-      header: 'Borrado',
-      message: '¿Está seguro de que quiere eliminar la nota?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'cancel',
-          handler: () => {
+    try {
+      let header, message, cancel, del;
+      this.translateS.get('BORRADO').subscribe((res: string) => {
+        header = res
+      })
+      this.translateS.get('CONFIRMACION BORRADO NOTA').subscribe((res: string) => {
+        message = res
+      })
+      this.translateS.get('ELIMINAR').subscribe((res: string) => {
+        del = res
+      })
+      this.translateS.get('CANCELAR').subscribe((res: string) => {
+        cancel = res
+      })
+      const alert = await this.alert.create({
+        cssClass: 'alertDelete',
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: cancel,
+            role: 'cancel',
+            cssClass: 'cancel',
+            handler: () => {
+            }
+          }, {
+            text: del,
+            cssClass: 'delete',
+            handler: () => {
+              this.borraNota(id);
+            }
           }
-        }, {
-          text: 'Eliminar',
-          cssClass: 'delete',
-          handler: () => {
-            this.borraNota(id);
-          }
-        }
-      ]
-    });
-    await alert.present();
+        ]
+      });
+      await alert.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   /**
@@ -200,57 +218,41 @@ export class Tab1Page {
    * @param nota Note clicked
    */
   async actionSheetPrincipal(nota: Nota) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Opciones',
-      cssClass: 'my-custom-class',
-      buttons: [{
-        text: 'Favorito',
-        icon: 'star',
-        handler: () => {
-          nota.favorito = true;
-          this.setFavorito(nota);
-        }
-      },
-      {
-        text: 'Compartir',
-        icon: 'share-outline',
-        handler: () => {
-          this.actionSheetSecundario(nota);
-        }
-      },
-      {
-        text: 'Cancelar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-
-        }
-      }]
-    });
-    await actionSheet.present();
-  }
-
-  async actionSheetSecundario(nota: Nota) {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Opciones',
-      cssClass: 'my-custom-class',
-      buttons: [
-        {
-          text: 'Código-QR',
-          icon: 'qr-code-outline',
+    try {
+      let header, fav, cancel;
+      this.translateS.get('OPCIONES').subscribe((res: string) => {
+        header = res
+      })
+      this.translateS.get('FAVORITO').subscribe((res: string) => {
+        fav = res
+      })
+      this.translateS.get('CANCELAR').subscribe((res: string) => {
+        cancel = res
+      })
+      const actionSheet = await this.actionSheetController.create({
+        header: header,
+        cssClass: 'my-custom-class',
+        buttons: [{
+          text: fav,
+          icon: 'star',
           handler: () => {
+            nota.favorito = true;
+            this.setFavorito(nota);
           }
         },
         {
-          text: 'Cancelar',
+          text: cancel,
           icon: 'close',
           role: 'cancel',
           handler: () => {
 
           }
         }]
-    });
-    await actionSheet.present();
+      });
+      await actionSheet.present();
+    } catch (err) {
+      console.log(err)
+    }
   }
 
 }
