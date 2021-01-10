@@ -1,59 +1,51 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
-import { Nota } from 'src/app/model/nota';
+import { Chat } from 'src/app/model/chat';
 import { HttpService } from 'src/app/services/http.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
-  selector: 'app-edit-nota',
-  templateUrl: './edit-nota.page.html',
-  styleUrls: ['./edit-nota.page.scss'],
+  selector: 'app-edit-chat',
+  templateUrl: './edit-chat.page.html',
+  styleUrls: ['./edit-chat.page.scss'],
 })
-export class EditNotaPage implements OnInit {
+export class EditChatPage implements OnInit {
 
-  @Input('nota') nota: Nota;
+  @Input('chat') chat: Chat;
 
   public tasks: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-    private modalController: ModalController,
-    private alertC: AlertController,
-    private toastS: ToastService,
+  constructor(private modalController: ModalController,
+    private alert: AlertController,
+    private formBuilder: FormBuilder,
     private loadingS: LoadingService,
-    private httpS: HttpService) {
+    private httpS:HttpService,
+    private toastS:ToastService) {
     this.tasks = this.formBuilder.group({
-      title: ['', Validators.required],
-      description: [''],
-      favorite: []
+      titulo: ['', Validators.required],
+      texto: ['']
     })
+  }
+
+  ionViewDidEnter() {
+    this.tasks.get('titulo').setValue(this.chat.titulo)
+    this.tasks.get('texto').setValue(this.chat.texto)
   }
 
   ngOnInit() {
   }
 
-  /**
-   * Method to set values of nota to tasks
-   */
-  ionViewDidEnter() {
-    this.tasks.get('title').setValue(this.nota.titulo)
-    this.tasks.get('description').setValue(this.nota.texto)
-    this.tasks.get('favorite').setValue(this.nota.favorito)
-  }
-
-  /**
-   * Method to change values of nota and come back to Tab1
-   */
   public async sendForm() {
     await this.loadingS.presentLoading();
-    let data: Nota = {
-      id: this.nota.id,
-      titulo: this.tasks.get('title').value,
-      texto: this.tasks.get('description').value,
-      favorito: this.tasks.get('favorite').value
+    let data: Chat = {
+      id: this.chat.id,
+      titulo: this.tasks.get('titulo').value,
+      texto: this.tasks.get('texto').value,
+      usuarios: this.chat.usuarios
     }
-    this.httpS.editarNota(data).then((res) => {
+    this.httpS.editChat(data).then((res) => {
       this.loadingS.stopLoading();
       this.toastS.presentToast('Nota guardada');
       this.modalController.dismiss();
@@ -64,18 +56,12 @@ export class EditNotaPage implements OnInit {
     })
   }
 
-  /**
-   * Method to close Modal and come back to Tab1
-   */
   public goBack() {
     this.modalController.dismiss();
   }
 
-  /**
-   * Method to ask if user want to close Modal without saving
-   */
   public async presentAlertConfirm() {
-    const alert = await this.alertC.create({
+    const alert = await this.alert.create({
       cssClass: 'alertDelete',
       header: 'Cancelar',
       message: '¿Está seguro de que quiere salir sin guardar la nota?',

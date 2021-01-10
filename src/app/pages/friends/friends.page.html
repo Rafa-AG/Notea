@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar style="--background: #ff7300;">
+    <ion-button slot="start" fill="clear" color="light" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" style="zoom: 1.25;"></ion-icon>
+    </ion-button>
+    <ion-title color="light">Amigos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="this.amigos.length > 0">
+      <ion-item *ngFor="let amigo of this.amigos; let i=index">
+        <ion-label>
+          <h2>{{amigo.nombre}}</h2>
+        </ion-label>
+        <ion-checkbox slot="start" style="--background-checked: #ffa44f; --border-color-checked: #ffa44f;" [(ngModel)]="amigo.inside"></ion-checkbox>
+      </ion-item>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+    <ion-fab-button style="--background: #ffa44f;" (click)="addToChat()">
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

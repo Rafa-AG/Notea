@@ -24,6 +24,18 @@ const routes: Routes = [
     path: 'tabsami',
     loadChildren: () => import('./amigos/tabsami/tabsami.module').then( m => m.TabsamiPageModule)
   },
+  {
+    path: 'friends',
+    loadChildren: () => import('./pages/friends/friends.module').then( m => m.FriendsPageModule)
+  },
+  {
+    path: 'chat',
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
+  },
+  {
+    path: 'edit-chat',
+    loadChildren: () => import('./pages/edit-chat/edit-chat.module').then( m => m.EditChatPageModule)
+  },
 ];
 @NgModule({
   imports: [

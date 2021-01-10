@@ -40,7 +40,6 @@ export class Tab1Page {
    * Method to call cargarColeccion() of NotasService and cargaDatos() when page is opened
    */
   ionViewDidEnter() {
-    this.notasS.cargarColeccion();
     this.authS.cargaUsuarios();
     this.cargaDatos();
   }
@@ -50,7 +49,7 @@ export class Tab1Page {
   }
 
   /**
-   * Method to get data from firebase and save it on listaNotas and items
+   * Method to get data from database and save it on listaNotas and items
    * @param $event 
    */
   public async cargaDatos($event = null) {
@@ -59,7 +58,7 @@ export class Tab1Page {
       this.httpS.getNotesByUser(this.user.id).then((res) => {
         let data = res.data;
         this.listaNotas = JSON.parse(data);
-        this.items=this.listaNotas
+        this.items = this.listaNotas
         if ($event) {
           $event.target.complete();
         }
@@ -93,7 +92,7 @@ export class Tab1Page {
    */
   public borraNota(id: any) {
     try {
-      this.httpS.eliminarNota(id).then((res)=>{
+      this.httpS.eliminarNota(id).then((res) => {
         let tmp = [];
         this.listaNotas.forEach((nota) => {
           if (nota.id != id) {
@@ -184,14 +183,14 @@ export class Tab1Page {
   public async setFavorito(nota: Nota) {
     await this.loadingS.presentLoading();
     let data: Nota = {
-      id:nota.id,
+      id: nota.id,
       titulo: nota.titulo,
       texto: nota.texto,
       favorito: nota.favorito
     }
-    this.httpS.editarNota(data).then((res)=>{
+    this.httpS.editarNota(data).then((res) => {
       this.loadingS.stopLoading();
-    }).catch((err)=>{
+    }).catch((err) => {
       this.loadingS.stopLoading();
       console.log(err)
     })

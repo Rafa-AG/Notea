@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list *ngIf="this.listaFavoritos.length > 0">
     <ion-item-sliding *ngFor="let nota of this.listaFavoritos; let i=index">
-      <ion-item >
+      <ion-item>
         <ion-label>
           <h1>{{nota.titulo}}</h1><br>{{nota.texto}}
         </ion-label>

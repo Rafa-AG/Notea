@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HTTP } from '@ionic-native/http/ngx';
+import { Chat } from '../model/chat';
 import { Nota } from '../model/nota';
 import { Usuario } from '../model/usuario';
 
@@ -71,7 +72,7 @@ export class HttpService {
     return this.http.get(`https://ralba-restful.herokuapp.com/amigos/${user}`, {}, { 'apikey': 'proyectoIonic' })
   }
 
-  obtenerAmigo(u1:number, u2:number):Promise<any>{
+  obtenerAmigo(u1: number, u2: number): Promise<any> {
     return this.http.get(`https://ralba-restful.herokuapp.com/amigos/${u1}/${u2}`, {}, { 'apikey': 'proyectoIonic' });
   }
 
@@ -91,6 +92,33 @@ export class HttpService {
     return this.http.put(`https://ralba-restful.herokuapp.com/amigos/${u1}/${u2}`, {
       amigo: u2
     }, { 'apikey': 'proyectoIonic' });
+  }
+
+  getAllChats(): Promise<any> {
+    return this.http.get('https://ralba-restful.herokuapp.com/chats', {}, { 'apikey': 'proyectoIonic' });
+  }
+
+  getChatByID(id: number): Promise<any> {
+    return this.http.get(`https://ralba-restful.herokuapp.com/chats/${id}`, {}, { 'apikey': 'proyectoIonic' })
+  }
+
+  createChat(chat: Chat): Promise<any> {
+    return this.http.post('https://ralba-restful.herokuapp.com/chats', {
+      titulo: chat.titulo,
+      texto: chat.texto,
+      usuarios: chat.usuarios
+    }, { 'apikey': 'proyectoIonic' });
+  }
+
+  editChat(chat: Chat): Promise<any> {
+    return this.http.put(`https://ralba-restful.herokuapp.com/chats/${chat.id}`, {
+      titulo: chat.titulo,
+      texto: chat.texto,
+    }, { 'apikey': 'proyectoIonic' })
+  }
+
+  deleteChat(id: number): Promise<any> {
+    return this.http.delete(`https://ralba-restful.herokuapp.com/chats/${id}`, {}, { 'apikey': 'proyectoIonic' })
   }
 
 }

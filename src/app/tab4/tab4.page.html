@@ -8,5 +8,34 @@
 </ion-header>
 
 <ion-content>
-
+  <div style="background-color: #ffa44f;">
+    <ion-searchbar #search debounce="500" (ionChange)="searchItems($event)" type="text"></ion-searchbar>
+  </div>
+  <ion-refresher slot="fixed" (ionRefresh)="cargaDatos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="this.chats.length > 0">
+    <ion-item-sliding *ngFor="let chat of this.items; let i=index">
+      <ion-item-options side="start" (ionSwipe)="presentAlertConfirm(chat.id)">
+        <ion-item-option color="danger" expandable>
+          <ion-icon name="trash" style="zoom: 1.5;"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item>
+        <ion-label>
+          <h1>{{chat.titulo}}</h1><br>{{chat.texto}}
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="end" (ionSwipe)="editChat(chat)">
+        <ion-item-option style="--background:#ffa44f;" expandable>
+          <ion-icon name="pencil" style="zoom: 1.5;"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+    <ion-fab-button style="--background: #ffa44f;" (click)="goFriendsPage()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
