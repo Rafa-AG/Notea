@@ -106,7 +106,7 @@ export class FriendsPage implements OnInit {
       component: ChatPage,
       cssClass: 'my-custom-class',
       componentProps: {
-        amigos: this.listaChat
+        amigos: this.amigos
       }
     });
     modal.present();

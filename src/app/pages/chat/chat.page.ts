@@ -17,8 +17,6 @@ export class ChatPage implements OnInit {
 
   @Input('amigo') amigos: Amigo[];
 
-  public closeFriends: boolean = false;
-
   public tasks: FormGroup
 
   private listaChat = []
@@ -113,7 +111,6 @@ export class ChatPage implements OnInit {
         guardada = res
       })
       await this.servicios.presentLoading();
-      console.log(this.listaChat)
       let data: Chat = {
         id: 0,
         titulo: this.tasks.get('titulo').value,
