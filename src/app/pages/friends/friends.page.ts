@@ -101,7 +101,7 @@ export class FriendsPage implements OnInit {
   }
 
   public async goChat() {
-    console.log(this.listaChat)
+    this.modalController.dismiss();
     const modal = await this.modalController.create({
       component: ChatPage,
       cssClass: 'my-custom-class',

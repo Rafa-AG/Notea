@@ -51,6 +51,7 @@ export class ChatPage implements OnInit {
   public async cargaDatos($event = null) {
     try {
       await this.userLogged();
+      this.listaChat=[]
       this.amigos.forEach((a) => {
         this.listaChat.push(a.id)
       })
